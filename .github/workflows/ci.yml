@@ -1,0 +1,62 @@
+name: SolveSprint CI / CD Quality Gate
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  verify:
+    name: Build, Audit & Test Quality Gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js v22 Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Clean Dependency Installation
+        run: npm ci
+
+      - name: Validate Prisma Schema
+        run: npx prisma validate
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: ESLint Static Code Analysis
+        run: npm run lint
+
+      - name: TypeScript Compiler Check
+        run: npx tsc --noEmit
+
+      - name: Legal Placeholder Scan
+        run: npm run scan-placeholders
+
+      - name: Execute Contract Unit & Integration Tests
+        run: npm test
+        env:
+          AUTH_SECRET: "ci-testing-secret-key-min-32-characters-required"
+          APP_MODE: "MARKETING_ONLY"
+
+      - name: Next.js Production Build
+        run: npx next build
+        env:
+          AUTH_SECRET: "ci-testing-secret-key-min-32-characters-required"
+          APP_MODE: "MARKETING_ONLY"
+
+      - name: OpenNext Cloudflare Build
+        run: npx opennextjs-cloudflare build
+        env:
+          AUTH_SECRET: "ci-testing-secret-key-min-32-characters-required"
+          APP_MODE: "MARKETING_ONLY"
+
+
+      - name: Production Dependency Vulnerability Audit
+        run: npm audit --omit=dev

@@ -1,0 +1,36 @@
+{
+  "inspection_date": "2026-07-26",
+  "application": "SolveSprint High-School Innovation League",
+  "repository": "c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main",
+  "node_version": "v25.1.0",
+  "npm_version": "11.6.2",
+  "hashes": {
+    "package.json": "9726DD33261DC5D474419675D9033D6739EEA4EE43194156ED98015D0120E53E",
+    "package-lock.json": "F310B8F52BD55D3D867859034D0BED3EB61A4720CFC478E237815EFC9FFF3E39",
+    "prisma/schema.prisma": "018F1969D67C43FC84C987100516FED056B0AD3F754EFB8C7469354DF9505B5A"
+  },
+  "metrics": {
+    "total_pages": 22,
+    "total_route_handlers": 1,
+    "total_server_actions": 13,
+    "total_forms": 8,
+    "total_database_models": 11,
+    "total_collected_data_fields": 42,
+    "total_vendors": 3,
+    "total_cookies_storage_keys": 1,
+    "total_legal_promises_evaluated": 18,
+    "p0_count": 2,
+    "p1_count": 3,
+    "p2_count": 3,
+    "p3_count": 3,
+    "incomplete_tests": 0,
+    "inaccessible_files": 0,
+    "remaining_unknown_items": 5
+  },
+  "tests_summary": {
+    "npm_test_exit_code": 0,
+    "tsc_exit_code": 0,
+    "next_lint_exit_code": 0,
+    "prisma_validate_exit_code": 0
+  }
+}

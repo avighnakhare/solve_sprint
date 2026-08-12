@@ -1,0 +1,16 @@
+# Complete Policy Reality Matrix
+
+Evaluation of factual claims in `/privacy`, `/terms`, and `/rules` against actual implementation.
+
+| Policy | Section | Policy Promise | Actual Code Implementation | Match Status | Evidence | Required Correction |
+| :--- | :--- | :--- | :--- | :---: | :--- | :--- |
+| **Privacy** | Section 1 | "We collect information you provide directly..." | Form fields map directly to `StudentProfile` and `OrganizationProfile`. | **MATCH** | [lib/actions.ts:L290](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/lib/actions.ts#L290) | None |
+| **Privacy** | Section 2 | "We collect parent or guardian permission for users under 18." | Form collects parent details & typed signature, but sends no out-of-band verification link. | **PARTIAL** | [components/forms/student-signup-form.tsx:L390](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/components/forms/student-signup-form.tsx#L390) | Implement parental email verification loop |
+| **Privacy** | Section 3 | "We do not sell personal data to third parties." | No data selling APIs or third-party ad brokers exist. | **MATCH** | [package.json:L16](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/package.json#L16) | None |
+| **Privacy** | Section 4 | "Student profiles are private by default." | `isPublic` defaults to `false` in `StudentProfile` schema. | **MATCH** | [prisma/schema.prisma:L34](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/prisma/schema.prisma#L34) | None |
+| **Privacy** | Section 5 | "We store authentication cookies securely." | `solvesprint_session` is `HttpOnly` with `SameSite=Lax`. | **MATCH** | [lib/auth.ts:L41](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/lib/auth.ts#L41) | None |
+| **Terms** | Section 1 | "Users must be at least 13 years old to register." | `is13Plus` checkbox required during registration. | **MATCH** | [lib/actions.ts:L58](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/lib/actions.ts#L58) | None |
+| **Terms** | Section 4 | "Students retain ownership of submitted original work." | Submissions store URL references; no IP transfer occurs in DB. | **MATCH** | [prisma/schema.prisma:L142](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/prisma/schema.prisma#L142) | None |
+| **Terms** | Section 6 | "Account terminations can be requested by contacting support." | No self-service deletion UI exists; manual admin intervention required. | **MATCH** | [app/student/profile/page.tsx:L1](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/app/student/profile/page.tsx#L1) | Add self-service deletion workflow |
+| **Rules** | Section 2 | "Teams must comply with minimum and maximum team size limits." | Team registration checks `minTeamSize` and `maxTeamSize`. | **MATCH** | [lib/actions.ts:L650](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/lib/actions.ts#L650) | None |
+| **Rules** | Section 5 | "Solutions must be submitted prior to the challenge deadline." | `submitSolutionAction` enforces `challenge.submissionDeadline`. | **MATCH** | [lib/actions.ts:L935](file:///c:/Users/khare/Downloads/Solve-Sprint-main/Solve-Sprint-main/lib/actions.ts#L935) | None |

@@ -1,0 +1,565 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// USER & AUTHENTICATION MODELS
+// -----------------------------------------------------------------------------
+
+model User {
+  id                  String               @id @default(cuid())
+  email               String               @unique // Case-normalized lowercased email
+  passwordHash        String
+  role                String               @default("STUDENT") // STUDENT | ORGANIZATION | JUDGE | ADMIN
+  status              String               @default("PENDING_EMAIL_VERIFICATION") // AccountStatus
+  sessionVersion      Int                  @default(1)
+  mfaSecretEncrypted  String?              // AES-GCM encrypted TOTP secret
+  mfaVerifiedAt       DateTime?
+  mfaRecoveryCodes    String?              // JSON array of hashed single-use recovery codes
+  deletedAt           DateTime?            // Soft deletion timestamp
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  studentProfile      StudentProfile?
+  organizationProfile OrganizationProfile?
+  judgeProfile        JudgeProfile?
+  auditLogs           AuditLog[]
+  consentRecords      ConsentRecord[]      @relation("ActorUser")
+  sessions            Session[]
+  reviewDecisions     ChallengeReviewDecision[] @relation("ReviewerUser")
+  attestations        HostSafetyAttestation[]   @relation("AttesterUser")
+  submissionsMade     SubmissionRevision[]      @relation("SubmitterUser")
+  publishedSnapshots  AwardResultSnapshot[]     @relation("PublisherUser")
+  adminInvitesCreated VerificationToken[]       @relation("AdminInviteCreator")
+
+  @@index([email])
+  @@index([status])
+}
+
+model Session {
+  id               String    @id @default(cuid())
+  userId           String
+  sessionTokenHash String    @unique
+  ipHash           String?   // Salted SHA-256 hash (90-day TTL)
+  userAgentTrunc   String?   // Max 128 characters
+  sessionVersion   Int       @default(1)
+  expiresAt        DateTime
+  lastUsedAt       DateTime  @default(now())
+  revokedAt        DateTime?
+  createdAt        DateTime  @default(now())
+  user             User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([sessionTokenHash])
+}
+
+model PilotAccessGrant {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  grantedBy   String
+  notes       String?
+  createdAt   DateTime @default(now())
+}
+
+// -----------------------------------------------------------------------------
+// PROFILES & GUARDIAN RELATIONS
+// -----------------------------------------------------------------------------
+
+model StudentProfile {
+  id                     String                 @id @default(cuid())
+  userId                 String                 @unique
+  firstName              String
+  lastName               String
+  grade                  String
+  schoolName             String
+  city                   String
+  state                  String
+  country                String
+  interests              String                 @default("[]")
+  guardianApprovalStatus String                 @default("NOT_REQUIRED") // GuardianApprovalStatus
+  deletedAt              DateTime?
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+  user                   User                   @relation(fields: [userId], references: [id], onDelete: Restrict)
+  ledTeams               Team[]                 @relation("TeamLead")
+  memberships            TeamMember[]
+  enrollments            ChallengeEnrollment[]
+  guardianRelationships  GuardianRelationship[]
+  ruleAcceptances        ChallengeRuleAcceptance[]
+}
+
+model GuardianRelationship {
+  id               String          @id @default(cuid())
+  studentId        String
+  guardianEmail    String
+  guardianName     String
+  relationshipType String          @default("PARENT_LEGAL_GUARDIAN")
+  status           String          @default("PENDING_GUARDIAN") // GuardianApprovalStatus (Single Source of Truth)
+  verifiedAt       DateTime?
+  withdrawnAt      DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  student          StudentProfile  @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  consentRecords   ConsentRecord[] @relation("GuardianConsentRecords")
+
+  @@index([studentId])
+  @@index([guardianEmail])
+}
+
+model OrganizationProfile {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  organizationName   String
+  organizationType   String             // COMPANY | COLLEGE | NONPROFIT | SPONSOR | OTHER
+  website            String?
+  contactFirstName   String
+  contactLastName    String
+  contactRole        String?
+  city               String
+  state              String
+  country            String
+  description        String
+  verificationStatus String             @default("UNVERIFIED") // OrganizationVerificationStatus
+  verifiedAt         DateTime?
+  deletedAt          DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  user               User               @relation(fields: [userId], references: [id], onDelete: Restrict)
+  challenges         Challenge[]
+}
+
+model JudgeProfile {
+  id                  String                    @id @default(cuid())
+  userId              String                    @unique
+  fullName            String
+  organization        String
+  title               String
+  bio                 String?
+  verificationStatus  String                    @default("UNVERIFIED") // JudgeVerificationStatus
+  verifiedAt          DateTime?
+  deletedAt           DateTime?
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  user                User                      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assignments         JudgeAssignment[]
+  conflictDisclosures JudgeConflictDisclosure[]
+}
+
+// -----------------------------------------------------------------------------
+// CHALLENGES, RULES & ATTESTATIONS
+// -----------------------------------------------------------------------------
+
+model Challenge {
+  id                     String                    @id @default(cuid())
+  organizationId         String
+  title                  String
+  slug                   String                    @unique
+  category               String
+  shortSummary           String
+  problemStatement       String
+  background             String
+  goal                   String
+  deliverables           String                    @default("[]")
+  minTeamSize            Int                       @default(1)
+  maxTeamSize            Int                       @default(4)
+  eligibilityNotes       String?
+  registrationOpenAt     DateTime
+  registrationCloseAt    DateTime
+  submissionDeadline     DateTime
+  judgingStartsAt        DateTime
+  winnerAnnouncementAt   DateTime
+  timezone               String                    // Valid IANA Timezone string (e.g., "America/New_York")
+  prizeDescription       String?
+  prizeCashValueCents    Int?                      // Minor currency units (e.g., 50000 = $500.00)
+  prizeCurrency          String                    @default("USD")
+  recognitionDescription String?
+  rubricJson             String
+  status                 String                    @default("DRAFT") // ChallengeStatus
+  adminReviewNotes       String?
+  isFeatured             Boolean                   @default(false)
+  deletedAt              DateTime?
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+  organization           OrganizationProfile       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  teams                  Team[]
+  submissions            Submission[]
+  awards                 Award[]
+  enrollments            ChallengeEnrollment[]
+  ruleVersions           ChallengeRuleVersion[]
+  challengeVersions      ChallengeVersion[]
+  safetyAttestations     HostSafetyAttestation[]
+  reviewDecisions        ChallengeReviewDecision[]
+  ruleAcceptances        ChallengeRuleAcceptance[]
+  judgeAssignments       JudgeAssignment[]
+  resultSnapshots        AwardResultSnapshot[]
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+model ChallengeEnrollment {
+  id          String         @id @default(cuid())
+  challengeId String
+  studentId   String
+  teamId      String?
+  status      String         @default("ACTIVE")
+  enrolledAt  DateTime       @default(now())
+  challenge   Challenge      @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  student     StudentProfile @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  team        Team?          @relation(fields: [teamId], references: [id], onDelete: SetNull)
+
+  @@unique([challengeId, studentId])
+  @@index([challengeId])
+  @@index([studentId])
+  @@index([teamId])
+}
+
+model ChallengeVersion {
+  id             String                    @id @default(cuid())
+  challengeId    String
+  versionNumber  Int                       @default(1)
+  contentHash    String
+  snapshotJson   String
+  createdAt      DateTime                  @default(now())
+  challenge      Challenge                 @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  reviewDecisions ChallengeReviewDecision[]
+
+  @@unique([challengeId, versionNumber])
+}
+
+model HostSafetyAttestation {
+  id               String    @id @default(cuid())
+  challengeId      String
+  versionNumber    Int       @default(1)
+  contentHash      String
+  attestationJson  String    // Structured safety & child protection responses
+  attestedByUserId String
+  attestedAt       DateTime  @default(now())
+  challenge        Challenge @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  attestedByUser   User      @relation("AttesterUser", fields: [attestedByUserId], references: [id], onDelete: Restrict)
+
+  @@index([challengeId])
+}
+
+model ChallengeReviewDecision {
+  id                 String           @id @default(cuid())
+  challengeId        String
+  challengeVersionId String
+  decision           String           // APPROVED | REQUESTED_EDITS | REJECTED
+  reviewerUserId     String
+  reviewNotes        String?
+  createdAt          DateTime         @default(now())
+  challenge          Challenge        @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  challengeVersion   ChallengeVersion @relation(fields: [challengeVersionId], references: [id], onDelete: Restrict)
+  reviewerUser       User             @relation("ReviewerUser", fields: [reviewerUserId], references: [id], onDelete: Restrict)
+
+  @@index([challengeId])
+  @@index([challengeVersionId])
+}
+
+model ChallengeRuleVersion {
+  id            String                    @id @default(cuid())
+  challengeId   String
+  versionNumber Int                       @default(1)
+  contentHash   String
+  rulesJson     String
+  createdAt     DateTime                  @default(now())
+  challenge     Challenge                 @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  acceptances   ChallengeRuleAcceptance[]
+  revisions     SubmissionRevision[]
+
+  @@unique([challengeId, versionNumber])
+}
+
+model ChallengeRuleAcceptance {
+  id                     String               @id @default(cuid())
+  challengeId            String
+  studentId              String
+  challengeRuleVersionId String
+  acceptedAt             DateTime             @default(now())
+  challenge              Challenge            @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  student                StudentProfile       @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  ruleVersion            ChallengeRuleVersion @relation(fields: [challengeRuleVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([challengeId, studentId, challengeRuleVersionId])
+}
+
+// -----------------------------------------------------------------------------
+// TEAMS & SUBMISSIONS
+// -----------------------------------------------------------------------------
+
+model Team {
+  id            String                @id @default(cuid())
+  challengeId   String
+  teamName      String
+  leadStudentId String
+  status        String                @default("REGISTERED") // REGISTERED | CANCELED | DISQUALIFIED
+  deletedAt     DateTime?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  challenge     Challenge             @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  leadStudent   StudentProfile        @relation("TeamLead", fields: [leadStudentId], references: [id], onDelete: Restrict)
+  members       TeamMember[]
+  enrollments   ChallengeEnrollment[]
+  submission    Submission?
+  awards        Award[]
+
+  @@unique([challengeId, teamName])
+  @@index([challengeId])
+  @@index([leadStudentId])
+}
+
+model TeamMember {
+  id                   String          @id @default(cuid())
+  teamId               String
+  studentId            String?
+  invitedName          String
+  invitedEmail         String          // Case-normalized
+  role                 String          @default("MEMBER") // LEAD | MEMBER
+  status               String          @default("PENDING") // PENDING | ACCEPTED | DECLINED
+  inviteTokenHash      String?         @unique
+  inviteTokenExpiresAt DateTime?
+  respondedAt          DateTime?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  team                 Team            @relation(fields: [teamId], references: [id], onDelete: Restrict)
+  student              StudentProfile? @relation(fields: [studentId], references: [id], onDelete: SetNull)
+
+  @@unique([teamId, studentId])
+  @@index([teamId])
+  @@index([invitedEmail])
+}
+
+model Submission {
+  id             String               @id @default(cuid())
+  teamId         String               @unique
+  challengeId    String
+  title          String
+  summary        String
+  submissionLink String
+  fileUrl        String?
+  notes          String?
+  status         String               @default("SUBMITTED") // SUBMITTED | UNDER_REVIEW | DISQUALIFIED
+  submittedAt    DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  team           Team                 @relation(fields: [teamId], references: [id], onDelete: Restrict)
+  challenge      Challenge            @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  revisions      SubmissionRevision[]
+  rubricScores   RubricScore[]
+
+  @@index([challengeId])
+}
+
+model SubmissionRevision {
+  id                     String               @id @default(cuid())
+  submissionId           String
+  receiptId              String               @unique @default(cuid())
+  receiptHmac            String               // HMAC-SHA256 server signature of receipt payload
+  revisionNumber         Int
+  title                  String
+  summary                String
+  submissionLink         String
+  fileUrl                String?
+  notes                  String?
+  challengeRuleVersionId String
+  originalityPolicyId    String
+  publicityPreference    String               @default("PRIVATE") // PRIVATE | PORTFOLIO_ONLY | PUBLIC_SHOWCASE
+  submittedById          String
+  createdAt              DateTime             @default(now())
+  submission             Submission           @relation(fields: [submissionId], references: [id], onDelete: Restrict)
+  submittedByUser        User                 @relation("SubmitterUser", fields: [submittedById], references: [id], onDelete: Restrict)
+  ruleVersion            ChallengeRuleVersion @relation(fields: [challengeRuleVersionId], references: [id], onDelete: Restrict)
+  originalityPolicy      PolicyDocument       @relation("OriginalityPolicyRevisions", fields: [originalityPolicyId], references: [id], onDelete: Restrict)
+  publicityConsents      ConsentRecord[]      @relation("RevisionPublicityConsents")
+
+  @@unique([submissionId, revisionNumber])
+  @@index([submissionId])
+  @@index([receiptId])
+}
+
+// -----------------------------------------------------------------------------
+// JUDGING & AWARDS
+// -----------------------------------------------------------------------------
+
+model JudgeAssignment {
+  id                  String        @id @default(cuid())
+  challengeId         String
+  judgeUserId         String
+  status              String        @default("ASSIGNED") // ASSIGNED | RECUSED | COMPLETED
+  agreementAcceptedAt DateTime?
+  recusalReason       String?
+  createdAt           DateTime      @default(now())
+  challenge           Challenge     @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  judge               JudgeProfile  @relation(fields: [judgeUserId], references: [userId], onDelete: Restrict)
+  rubricScores        RubricScore[]
+
+  @@unique([challengeId, judgeUserId])
+}
+
+model JudgeConflictDisclosure {
+  id              String       @id @default(cuid())
+  judgeUserId     String
+  teamId          String?
+  conflictDetails String
+  disclosedAt     DateTime     @default(now())
+  judge           JudgeProfile @relation(fields: [judgeUserId], references: [userId], onDelete: Restrict)
+
+  @@index([judgeUserId])
+}
+
+model RubricScore {
+  id                String          @id @default(cuid())
+  submissionId      String
+  judgeAssignmentId String
+  criterionKey      String
+  points            Int
+  feedback          String?
+  isLocked          Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  submission        Submission      @relation(fields: [submissionId], references: [id], onDelete: Restrict)
+  judgeAssignment   JudgeAssignment @relation(fields: [judgeAssignmentId], references: [id], onDelete: Restrict)
+
+  @@unique([submissionId, judgeAssignmentId, criterionKey])
+}
+
+model AwardResultSnapshot {
+  id            String    @id @default(cuid())
+  challengeId   String
+  snapshotHash  String
+  snapshotJson  String
+  publishedAt   DateTime  @default(now())
+  publishedById String
+  challenge     Challenge @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  publishedByUser User    @relation("PublisherUser", fields: [publishedById], references: [id], onDelete: Restrict)
+
+  @@index([challengeId])
+}
+
+model Award {
+  id           String    @id @default(cuid())
+  challengeId  String
+  teamId       String
+  awardType    String
+  points       Int
+  judgeComment String?
+  status       String    @default("DRAFT") // DRAFT | PUBLISHED | REVOKED
+  publishedAt  DateTime?
+  publishedBy  String?
+  createdAt    DateTime  @default(now())
+  challenge    Challenge @relation(fields: [challengeId], references: [id], onDelete: Restrict)
+  team         Team      @relation(fields: [teamId], references: [id], onDelete: Restrict)
+
+  @@unique([challengeId, teamId, awardType])
+  @@index([challengeId])
+  @@index([teamId])
+}
+
+// -----------------------------------------------------------------------------
+// POLICY & CONSENT RECORDS
+// -----------------------------------------------------------------------------
+
+model PolicyDocument {
+  id                  String               @id @default(cuid())
+  key                 String               // Terms, Privacy, LeagueRules, HostAgreement, JudgeAgreement, OriginalityPolicy
+  version             String
+  contentHash         String
+  contentText         String
+  approvalStatus      String               @default("DRAFT") // DRAFT | APPROVED | RETIRED
+  approvedBy          String?
+  publishedAt         DateTime?
+  effectiveAt         DateTime?
+  retiredAt           DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  consentRecords      ConsentRecord[]      @relation("PolicyDocumentConsent")
+  originalityRevisions SubmissionRevision[] @relation("OriginalityPolicyRevisions")
+
+  @@unique([key, version])
+}
+
+model ConsentRecord {
+  id                   String                @id @default(cuid())
+  actorUserId          String?
+  actorType            String                // STUDENT | GUARDIAN | ORGANIZATION | JUDGE
+  subjectStudentId     String?
+  policyDocumentId     String
+  policyVersion        String
+  purpose              String                @default("PARTICIPATION") // PARTICIPATION | PUBLICITY_PORTFOLIO | PUBLIC_SHOWCASE
+  statementText        String
+  acceptedAt           DateTime              @default(now())
+  withdrawnAt          DateTime?
+  ipHash               String?               // Salted SHA-256 hash (90-day TTL)
+  userAgentTrunc       String?               // Max 128 characters
+  status               String                @default("ACTIVE") // ACTIVE | WITHDRAWN | SUPERSEDED
+  guardianRelationId   String?
+  submissionRevisionId String?
+  policyDocument       PolicyDocument        @relation("PolicyDocumentConsent", fields: [policyDocumentId], references: [id], onDelete: Restrict)
+  actorUser            User?                 @relation("ActorUser", fields: [actorUserId], references: [id], onDelete: SetNull)
+  guardianRelationship GuardianRelationship? @relation("GuardianConsentRecords", fields: [guardianRelationId], references: [id], onDelete: SetNull)
+  submissionRevision   SubmissionRevision?   @relation("RevisionPublicityConsents", fields: [submissionRevisionId], references: [id], onDelete: SetNull)
+
+  @@index([actorUserId])
+  @@index([subjectStudentId])
+  @@index([policyDocumentId])
+  @@index([guardianRelationId])
+  @@index([submissionRevisionId])
+}
+
+model VerificationToken {
+  id             String    @id @default(cuid())
+  tokenHash      String    @unique
+  tokenType      String    // EMAIL_VERIFICATION | GUARDIAN_APPROVAL | PASSWORD_RESET | ADMIN_INVITE
+  recipientEmail String
+  targetId       String?
+  createdById    String?
+  expiresAt      DateTime
+  usedAt         DateTime?
+  createdAt      DateTime  @default(now())
+  createdBy      User?     @relation("AdminInviteCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([recipientEmail])
+  @@index([tokenType])
+}
+
+// -----------------------------------------------------------------------------
+// OPTION B: PERMITTED MARKETING WRITES
+// -----------------------------------------------------------------------------
+
+model WaitlistSignup {
+  id          String   @id @default(cuid())
+  email       String   @unique // Case-normalized
+  name        String
+  consentId   String?  // Reference to ConsentRecord
+  verifiedAt  DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model OrganizationLead {
+  id               String   @id @default(cuid())
+  email            String   @unique // Case-normalized
+  organizationName String
+  contactName      String
+  challengeIdea    String?
+  consentId        String?  // Reference to ConsentRecord
+  verifiedAt       DateTime?
+  createdAt        DateTime @default(now())
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  userId       String?
+  action       String
+  entityType   String
+  entityId     String?
+  metadataJson String?
+  createdAt    DateTime @default(now())
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([entityType, entityId])
+}

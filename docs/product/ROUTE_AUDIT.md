@@ -1,0 +1,37 @@
+# SolveSprint route audit
+
+Last updated: 2026-07-20
+
+This ledger covers every route discovered under `app/`. “Verified” means the route has been inspected in source and included in the migration/build/browser plan. It does not imply that every production dependency exists.
+
+| Route | Audience | Authentication | Required role | Primary job | Current layout before migration | Important states | Problems found | Target shell | Migration | Verification |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `/` | Visitor | Public | None | Explain the league and pathways | Photographic editorial homepage | Image fallbacks, CTA navigation | Previously redesigned; preserve | Public editorial | Complete | Build + browser |
+| `/challenges` | Visitor/student | Public | None | Discover public challenges | Editorial directory | Loading, query filters, no match, request failure | Test-looking records remain in data | Public editorial | Complete | Search/filter/history/mobile |
+| `/challenges/[slug]` | Visitor/student | Public; personalized CTA | None | Understand a public challenge | Pastel card stack | Missing challenge, registration open/closed, existing team, completed | Internal status badges, generic icons, weak deadline hierarchy | Public editorial | Migrated | Build + browser |
+| `/challenges/[slug]/register` | Student | Required | Student | Create a team and invite members | Marketing-style form card | Existing team, closed registration, field errors | Full public chrome; excessive checkbox/card treatment | Student workspace | Migrated | Authorization + browser |
+| `/challenges/[slug]/submit` | Student | Required | Student team lead | Create or update one team submission | Marketing-style form card | No lead membership, deadline passed, validation error | No draft/final distinction or immutable snapshot | Student workspace | Migrated | Authorization + browser |
+| `/leaderboard` | Visitor | Public | None | View award-derived recognition | Editorial standings | Loading, empty, request failure | Points are real awards but no public result-publication gate | Public editorial | Complete | Build + browser |
+| `/login` | Visitor | Public | None | Authenticate | Split auth shell | Invalid credentials, redirect target | No recovery or brute-force controls | Authentication | Complete | Validation + redirect tests |
+| `/student/signup` | Visitor | Public | None | Create student account | Three-step split auth | Step validation, server errors, legal confirmations | No email verification | Authentication | Complete | Step/mobile tests |
+| `/organization/signup` | Visitor | Public | None | Create organization account | Three-step split auth | Step validation, server errors, legal confirmations | Account created active; verification is tied only to challenge review | Authentication | Complete | Step/mobile/security tests |
+| `/invite/[token]` | Invite recipient | Token-gated | Student or new student | Accept or decline team invitation | Two-card public page | Invalid, expired, declined, wrong account, duplicate membership, signup | Decline is token-only; no explicit revoked state/model | Authentication/onboarding | Migrated | Token-state source audit |
+| `/student/my-challenges` | Student | Required | Student | Understand next work across teams | Pastel dashboard and repeated cards | Empty, pending invite, active, submitted, completed, email delivery warning | No dominant next action; duplicate sections; emails mentioned in dev notice | Student workspace | Migrated | Role/browser |
+| `/student/profile` | Student | Required | Student | Update profile and privacy | Pastel profile/stat cards | Save success/error, private/public | Public profile route does not exist; city/state/school retained | Student workspace | Migrated | Role/browser |
+| `/org/dashboard` | Organization | Required | Organization | Manage owned challenges | Pastel metrics and challenge cards | Welcome, submitted, resubmitted, empty | No verification workflow; too many equal metrics | Organization workspace | Migrated | Ownership/browser |
+| `/org/challenges/new` | Organization | Required | Organization | Submit structured challenge | Long single-page card form | Validation and submit | No draft save/preview; current creation submits immediately for review | Organization workspace | Migrated | Date/rubric validation |
+| `/org/challenges/[id]` | Organization | Required | Owning organization | Monitor owned challenge | Two-card detail | Missing/not-owned, editability, empty teams/submissions | No judge assignment or review progress model | Organization workspace | Migrated | Ownership/browser |
+| `/org/challenges/[id]/edit` | Organization | Required | Owning organization | Edit returned/draft challenge | Long single-page card form | Missing/not-owned, non-editable status, validation | No version history; edits reset status and slug | Organization workspace | Migrated | Ownership/status tests |
+| `/admin` | Administrator | Required | Admin | Operate review queue and monitor system | Eight colored metric cards | Empty review queue | No organization queue; decorative and weak action priority | Platform administration | Migrated | Role/browser |
+| `/admin/challenges/[id]` | Administrator | Required | Admin | Review challenge, inspect teams, add awards | Marketing cards in split grid | Missing, status update, reason required, award errors/empty | Results publication remains coupled to award visibility | Platform administration | Migrated | Role/action source tests |
+| `/privacy` | Visitor | Public | None | Explain data handling | MVP card copy | Long content | Explicitly called “local MVP”; insufficient for minors/legal launch | Public editorial/legal | Migrated | Browser |
+| `/rules` | Visitor | Public | None | Explain participation and safety | Icon checklist card | Long content | Generic icons; incomplete operational detail | Public editorial/legal | Migrated | Browser |
+| `/terms` | Visitor | Public | None | Explain account and challenge terms | MVP card copy | Long content | Explicitly called “local testing”; requires counsel | Public editorial/legal | Migrated | Browser |
+| `/logout` | Authenticated user | Cookie action | Any | Invalidate local session and return home | Route handler | Missing cookie, repeated request | GET mutation; lacks explicit POST/CSRF strategy | Authentication | Preserved, documented | Source audit |
+| Global loading | All | Contextual | Contextual | Explain navigation delay | Quote-based route loader | Reduced motion | Quotes require attribution maintenance | Shared state | Preserved | Build |
+| Global not found | All | Contextual | Contextual | Recover from unknown route | Framework default | Unknown route | No branded recovery | Shared state | Migrated | Browser |
+| Global error | All | Contextual | Contextual | Recover from unexpected render failure | Missing | Retry | No app-owned safe error surface | Shared state | Migrated | Build |
+
+## Routes and capabilities not present
+
+The repository does not contain routes for password recovery, email verification, student public portfolios, saved challenges, settings, notifications, organization profiles/settings, organization verification, judge assignments, judge review, public per-challenge results, abuse reports, account suspension, or taxonomy administration. These are documented as product gaps rather than represented with nonfunctional UI.

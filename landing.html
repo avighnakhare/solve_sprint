@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SolveSprint — Where Ideas Compete and Win</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  
+  <!-- CSS Styles -->
+  <style>
+    :root {
+      --background: #fff7ed;
+      --foreground: #111827;
+      --cream: #fff7ed;
+      --peach: #fed7aa;
+      --orange: #fdba74;
+      --sky: #bae6fd;
+      --blue: #38bdf8;
+      --lavender: #ddd6fe;
+      --pink: #fbcfe8;
+      --muted: #667085;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #fff7ed 0%, #fffbf5 38%, #ffffff 100%);
+      color: var(--foreground);
+      overflow-x: hidden;
+    }
+
+    /* 3D Canvas Background */
+    #webgl {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none; /* Let clicks pass through to interactive UI */
+    }
+
+    /* Progress Indicator */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 4px;
+      background: var(--orange);
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+
+    /* Premium Frosted Navbar */
+    .navbar {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 1200px;
+      height: 64px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(16, 24, 40, 0.08);
+      border-radius: 32px;
+      z-index: 90;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.05em;
+      color: var(--foreground);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--foreground);
+      font-weight: 600;
+      font-size: 14px;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--orange);
+    }
+
+    .nav-btn {
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--foreground);
+      background: var(--foreground);
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 20px;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: #1f2937;
+      transform: translateY(-1px);
+    }
+
+    /* Scrollable UI Container */
+    .scroller {
+      position: relative;
+      width: 100%;
+      z-index: 2;
+      pointer-events: none; /* Enable 3D canvas interaction beneath overlays */
+    }
+
+    /* Sections */
+    .section {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 10%;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .section-content {
+      max-width: 580px;
+      pointer-events: auto; /* Re-enable pointer events for text and buttons */
+    }
+
+    .section-right {
+      align-items: flex-end;
+      padding-left: 50%;
+    }
+
+    .section-center {
+      align-items: center;
+      text-align: center;
+      padding: 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Typography */
+    .eyebrow {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--orange);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      color: var(--foreground);
+      margin-bottom: 24px;
+    }
+
+    p {
+      font-size: clamp(16px, 1.5vw, 20px);
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 36px;
+      font-weight: 400;
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 16px;
+    }
+
+    .btn-center {
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 16px 32px;
+      border-radius: 32px;
+      font-weight: 600;
+      font-size: 16px;
+      text-decoration: none;
+      transition: all 0.2s ease-out;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--foreground);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+      background: #1f2937;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.5);
+      color: var(--foreground);
+      border: 1px solid rgba(16, 24, 40, 0.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.8);
+      transform: translateY(-2px);
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.8;
+    }
+
+    .scroll-indicator span {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+
+    .mouse-wheel {
+      width: 24px;
+      height: 40px;
+      border: 2px solid var(--foreground);
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .mouse-wheel::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 8px;
+      background: var(--foreground);
+      border-radius: 2px;
+      animation: scrollWheel 1.5s infinite;
+    }
+
+    @keyframes scrollWheel {
+      0% { top: 6px; opacity: 1; }
+      100% { top: 22px; opacity: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        height: 56px;
+        padding: 0 16px;
+      }
+      .nav-links {
+        display: none;
+      }
+      .section {
+        padding: 0 6%;
+      }
+      .section-right {
+        padding-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll Progress Indicator -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- Background 3D Viewport -->
+  <canvas id="webgl"></canvas>
+
+  <!-- Top Glassmorphic Navigation -->
+  <nav class="navbar">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      SolveSprint
+    </div>
+    <ul class="nav-links">
+      <li><a href="#hero">Overview</a></li>
+      <li><a href="#challenges">Challenges</a></li>
+      <li><a href="#collaboration">Collaboration</a></li>
+      <li><a href="#leaderboard">Leaderboard</a></li>
+    </ul>
+    <a href="#register" class="nav-btn">Get Started</a>
+  </nav>
+
+  <!-- Scrolling UI Overlays -->
+  <div class="scroller">
+    
+    <!-- SECTION 1: HERO -->
+    <section class="section" id="hero">
+      <div class="section-content">
+        <div class="eyebrow">SolveSprint League</div>
+        <h1>Where Ideas Compete & Win.</h1>
+        <p>SolveSprint connects ambitious high school student innovators with university organizations and local chapters to solve real-world challenges, build technical prototypes, and earn public recognition.</p>
+        <div class="btn-group">
+          <a href="#challenges" class="btn btn-primary">Browse Challenges</a>
+          <a href="#about" class="btn btn-secondary">Learn More</a>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <span>Scroll to Explore</span>
+        <div class="mouse-wheel"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: THE CHALLENGE -->
+    <section class="section section-right" id="challenges">
+      <div class="section-content">
+        <div class="eyebrow">Frictionless Innovation</div>
+        <h1>Navigate the Challenge.</h1>
+        <p>Step away from standard textbooks. Build real, structured submissions proposed by collegiate organizations. Overcome obstacles, optimize according to customized grading rubrics, and deliver code, models, or decks.</p>
+        <div class="btn-group">
+          <a href="#signup" class="btn btn-primary">Join a Team</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: THE SUBMISSION -->
+    <section class="section" id="collaboration">
+      <div class="section-content">
+        <div class="eyebrow">Collective Design</div>
+        <h1>Submit & Stand Out.</h1>
+        <p>Assemble your team with a single click. Invite classmates to your workspace, manage pending invitations, and collaborate to deliver project repositories directly to active judges on the platform.</p>
+        <div class="btn-group">
+          <a href="#workspace" class="btn btn-primary">Start Workspace</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: THE AWARD / LEADERS -->
+    <section class="section section-center" id="leaderboard">
+      <div class="section-content">
+        <div class="eyebrow">Trophy Showcase</div>
+        <h1>Claim Your Award.</h1>
+        <p>Gain recognition on the regional leaderboard. Real points are distributed by judges based on the structural validity and creative quality of your solutions. Put your high school on the innovation map.</p>
+        <div class="btn-group btn-center">
+          <a href="#register" class="btn btn-primary">Register Student Account</a>
+          <a href="#host" class="btn btn-secondary">Post a Competition</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- CDN scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <!-- 3D Viewport Script -->
+  <script>
+    // Register GSAP ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Get WebGL elements
+    const canvas = document.querySelector('#webgl');
+    const progressBar = document.querySelector('#progressBar');
+
+    // 1. Scene setup
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog('#fff7ed', 6, 26);
+
+    // 2. Camera setup
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 7);
+    const cameraTarget = new THREE.Vector3(0, 0, 0);
+
+    // 3. Renderer setup
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      alpha: true,
+      antialias: true,
+      powerPreference: "high-performance"
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+
+    // 4. Lighting setup
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xfff7ed, 1.4);
+    scene.add(hemiLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    dirLight.position.set(5, 12, 10);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.near = 0.5;
+    dirLight.shadow.camera.far = 30;
+    dirLight.shadow.camera.left = -6;
+    dirLight.shadow.camera.right = 6;
+    dirLight.shadow.camera.top = 6;
+    dirLight.shadow.camera.bottom = -6;
+    dirLight.shadow.bias = -0.0005;
+    dirLight.shadow.radius = 4;
+    scene.add(dirLight);
+
+    // Add colorful point lights for premium glass refraction looks
+    const blueRefractionLight = new THREE.PointLight(0xbae6fd, 4, 15);
+    blueRefractionLight.position.set(-6, 3, 2);
+    scene.add(blueRefractionLight);
+
+    const peachRefractionLight = new THREE.PointLight(0xfdba74, 4, 15);
+    peachRefractionLight.position.set(6, -3, 2);
+    scene.add(peachRefractionLight);
+
+    // Award / Trophy Internal Glow (Section 4)
+    const trophyLight = new THREE.PointLight(0xfdba74, 0, 10);
+    trophyLight.position.set(0, -1.2, -15);
+    scene.add(trophyLight);
+
+    // 5. Procedural 3D Objects
+
+    // A. Main Crystal Idea (Faceted Glass Icosahedron)
+    const crystalGeo = new THREE.IcosahedronGeometry(1.2, 0); // Faceted diamond style
+    const crystalMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      roughness: 0.05,
+      metalness: 0.0,
+      transmission: 1.0, 
+      opacity: 1.0,
+      transparent: true,
+      ior: 1.6,
+      thickness: 1.5,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.05,
+      side: THREE.DoubleSide
+    });
+    const crystal = new THREE.Mesh(crystalGeo, crystalMat);
+    crystal.castShadow = true;
+    crystal.receiveShadow = true;
+    scene.add(crystal);
+
+    // B. Obstacles (Section 2 - Frosted Pillars & Rings)
+    const frostedMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      roughness: 0.25,
+      transmission: 0.7,
+      thickness: 1.2,
+      clearcoat: 0.6,
+      transparent: true,
+      opacity: 0.9,
+      side: THREE.DoubleSide
+    });
+
+    const obstacleGroup = new THREE.Group();
+
+    // Rings
+    const ringGeo = new THREE.TorusGeometry(2.0, 0.12, 16, 100);
+    const ringPositions = [-3, -8, -13];
+    ringPositions.forEach((z) => {
+      const ring = new THREE.Mesh(ringGeo, frostedMat);
+      ring.position.set(0, 0, z);
+      ring.castShadow = true;
+      ring.receiveShadow = true;
+      obstacleGroup.add(ring);
+    });
+
+    // Pillars (Staggered left and right)
+    const pillarGeo = new THREE.CylinderGeometry(0.2, 0.2, 8, 32);
+    const pillars = [
+      { x: -2.8, y: 0, z: -5 },
+      { x: 2.8, y: 0, z: -7.5 },
+      { x: -2.8, y: 0, z: -10 },
+      { x: 2.8, y: 0, z: -12.5 }
+    ];
+    pillars.forEach((pos) => {
+      const pillar = new THREE.Mesh(pillarGeo, frostedMat);
+      pillar.position.set(pos.x, pos.y, pos.z);
+      pillar.castShadow = true;
+      pillar.receiveShadow = true;
+      obstacleGroup.add(pillar);
+    });
+
+    scene.add(obstacleGroup);
+
+    // C. Mentorship & Teamwork Spheres (Section 3)
+    const orbitGroup = new THREE.Group();
+    orbitGroup.position.set(0, 0, -15);
+    orbitGroup.scale.set(0.001, 0.001, 0.001); // Hide initially
+
+    const sphereColors = [0xfdba74, 0xbae6fd, 0xddd6fe];
+    const spherePositions = [
+      { x: 1.8, y: 0.5, z: 0 },
+      { x: -1.2, y: -1.2, z: 1.0 },
+      { x: -0.6, y: 1.5, z: -1.2 }
+    ];
+
+    spherePositions.forEach((pos, idx) => {
+      const mat = new THREE.MeshBasicMaterial({ color: sphereColors[idx] });
+      const geo = new THREE.SphereGeometry(0.18, 32, 32);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(pos.x, pos.y, pos.z);
+      orbitGroup.add(mesh);
+    });
+    scene.add(orbitGroup);
+
+    // D. Award Pedestal (Section 4)
+    const pedestalGeo = new THREE.CylinderGeometry(1.5, 1.8, 3.5, 8); // Octagonal marble column
+    const pedestalMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.12,
+      metalness: 0.05
+    });
+    const pedestal = new THREE.Mesh(pedestalGeo, pedestalMat);
+    pedestal.position.set(0, -6.5, -15); // Hidden below initially
+    pedestal.receiveShadow = true;
+    pedestal.castShadow = true;
+    scene.add(pedestal);
+
+    // E. Shadow Receiver Ground (Catches soft shadows seamlessly over CSS gradient)
+    const floorGeo = new THREE.PlaneGeometry(50, 50);
+    const floorMat = new THREE.ShadowMaterial({ opacity: 0.06 });
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -2.6;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    // 6. Interactive Mouse Parallax
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetRotationX = 0;
+    let targetRotationY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    // 7. Scroll Progress Bar
+    window.addEventListener('scroll', () => {
+      const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (window.scrollY / windowHeight) * 100;
+      progressBar.style.width = `${progress}%`;
+    });
+
+    // 8. GSAP ScrollTrigger Choreography
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: "body",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1.2
+      }
+    });
+
+    // Choreographing: Section 1 -> Section 2
+    tl.to(crystal.position, { z: -15, duration: 1.5, ease: "power1.inOut" }, 0);
+    tl.to(camera.position, { z: -8, duration: 1.5, ease: "power1.inOut" }, 0);
+    tl.to(cameraTarget, { z: -15, duration: 1.5, ease: "power1.inOut" }, 0);
+
+    // Choreographing: Section 2 -> Section 3
+    tl.to(camera.position, { x: 3.5, y: 1.2, z: -11, duration: 1.5, ease: "power1.inOut" }, 1.5);
+    tl.to(orbitGroup.scale, { x: 1, y: 1, z: 1, duration: 1.0, ease: "back.out(1.7)" }, 1.8);
+
+    // Choreographing: Section 3 -> Section 4
+    tl.to(crystal.position, { y: -0.9, duration: 1.5, ease: "bounce.out" }, 3.0);
+    tl.to(pedestal.position, { y: -2.7, duration: 1.5, ease: "power2.out" }, 3.0);
+    tl.to(camera.position, { x: 0, y: 0.3, z: -10, duration: 1.5, ease: "power1.inOut" }, 3.0);
+    tl.to(cameraTarget, { y: -0.9, duration: 1.5, ease: "power1.inOut" }, 3.0);
+    tl.to(trophyLight, { intensity: 4.5, duration: 1.0 }, 3.5);
+    
+    // Animate orbit sphere radius merging slightly inward during award landing
+    orbitGroup.children.forEach((mesh, index) => {
+      tl.to(mesh.position, {
+        x: mesh.position.x * 0.7,
+        y: mesh.position.y * 0.7 + 0.3,
+        z: mesh.position.z * 0.7,
+        duration: 1.0
+      }, 3.0);
+    });
+
+    // 9. Resize Handling
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // 10. Animation Loop
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const elapsedTime = clock.getElapsedTime();
+
+      // Gentle floating hover & rotation (combining timeline state + mouse parallax)
+      targetRotationY += (mouseX * 0.25 - targetRotationY) * 0.05;
+      targetRotationX += (-mouseY * 0.25 - targetRotationX) * 0.05;
+
+      if (crystal) {
+        // Only hover if crystal isn't locked on the pedestal (before landing)
+        if (crystal.position.y > -0.5) {
+          crystal.position.y = Math.sin(elapsedTime * 2.0) * 0.08;
+        }
+        crystal.rotation.y = elapsedTime * 0.15 + targetRotationY;
+        crystal.rotation.x = elapsedTime * 0.08 + targetRotationX;
+      }
+
+      // Rotate orbiting spheres group
+      if (orbitGroup) {
+        orbitGroup.rotation.y = -elapsedTime * 1.2;
+        orbitGroup.rotation.x = Math.sin(elapsedTime * 0.4) * 0.15;
+      }
+
+      // Keep camera oriented on target
+      camera.lookAt(cameraTarget);
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>

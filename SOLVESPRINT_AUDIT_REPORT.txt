@@ -1,0 +1,296 @@
+================================================================================
+SOLVESPRINT SYSTEM BEHAVIOR, TECHNICAL, PRIVACY, SECURITY, AND LEGAL AUDIT REPORT
+================================================================================
+Inspection Date: July 26, 2026
+Target Application: SolveSprint High-School Innovation League
+Repository Path: c:\Users\khare\Downloads\Solve-Sprint-main\Solve-Sprint-main
+Environment: Local Source Tree (Node.js v25.1.0, npm 11.6.2)
+Git Commit Hash: N/A (Standalone repository folder)
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY & REPRODUCIBILITY METRICS
+--------------------------------------------------------------------------------
+SolveSprint is a U.S.-focused web application intended as an innovation league where organizations publish real-world challenge briefs and high-school student teams submit solutions, earn recognition, and compete for points and awards.
+
+SUMMARY METRICS:
+- Total Pages: 22 page routes
+- Total Route Handlers: 1 API route handler (app/logout/route.ts)
+- Total Server Actions: 13 exported server action functions (lib/actions.ts)
+- Total Forms: 8 distinct form components
+- Total Database Models: 11 models (prisma/schema.prisma)
+- Total Collected Data Fields: 42 user-supplied & system-derived fields
+- Total External Vendors: 3 vendors (Resend, Cloudflare D1 / LibSQL, OpenNext / Wrangler)
+- Total Cookies / Storage Keys: 1 cookie (solvesprint_session), 0 localStorage / sessionStorage
+- Total Legal Promises Evaluated: 18 policy statements (/privacy, /terms, /rules)
+- Priority Findings:
+  * P0 (Critical): 2 findings
+  * P1 (Pre-Public Launch): 3 findings
+  * P2 (Pre-Submissions/Prizes): 3 findings
+  * P3 (Operational Hardening): 3 findings
+  * Total Findings: 11 findings
+- Failed Automated Tests: 0 (5/5 node tests passed; tsc --noEmit exit 0; next lint exit 0; prisma validate exit 0)
+- Remaining UNKNOWN Items: 5 human operational/legal questions requiring human decision
+
+CRYPTOGRAPHIC FILE HASHES (SHA-256):
+- package.json: 9726DD33261DC5D474419675D9033D6739EEA4EE43194156ED98015D0120E53E
+- package-lock.json: F310B8F52BD55D3D867859034D0BED3EB61A4720CFC478E237815EFC9FFF3E39
+- prisma/schema.prisma: 018F1969D67C43FC84C987100516FED056B0AD3F754EFB8C7469354DF9505B5A
+
+CATEGORY VERDICTS:
+- Private Developer Preview: SAFE WITH CAUTION (Functional locally; use non-production test credentials)
+- Invited Test Users: NOT RECOMMENDED (Unthrottled registration/login endpoints)
+- Real Students (Minors): UNSAFE (Lacks verifiable parental email confirmation link prior to account activation)
+- Public Registration: UNSAFE (Lacks CAPTCHA or IP rate-limiting)
+- Organization Registration: UNSAFE (Organization accounts receive ACTIVE status by default without manual admin approval)
+- Real Challenge Submissions: UNSAFE (External submission URLs accept unverified links without domain blocklists or malware scanning)
+- Prizes / Monetary Awards: UNSAFE (No tax W-9/1099 collection or financial auditing)
+- School Partnerships: UNSAFE (Institutional FERPA & school-directed consent unverified)
+
+
+--------------------------------------------------------------------------------
+2. MECHANICAL REPOSITORY INVENTORY
+--------------------------------------------------------------------------------
+PAGES & LAYOUTS (app/):
+- app/layout.tsx: Root HTML layout with Navbar and Footer (VERIFIED ACTIVE)
+- app/page.tsx: Home landing page (VERIFIED ACTIVE)
+- app/about/page.tsx: About / Mission page (VERIFIED ACTIVE)
+- app/admin/page.tsx: Administrative challenge list dashboard (VERIFIED ACTIVE)
+- app/admin/challenges/[id]/page.tsx: Administrative challenge review & award assignment page (VERIFIED ACTIVE)
+- app/challenges/page.tsx: Challenge directory list & search page (VERIFIED ACTIVE)
+- app/challenges/[slug]/page.tsx: Detailed challenge brief page (VERIFIED ACTIVE)
+- app/challenges/[slug]/register/page.tsx: Student team registration page (VERIFIED ACTIVE)
+- app/challenges/[slug]/submit/page.tsx: Student solution submission page (VERIFIED ACTIVE)
+- app/invite/[token]/page.tsx: Team member invitation acceptance/decline page (VERIFIED ACTIVE)
+- app/leaderboard/page.tsx: Sitewide leaderboard scoreboard page (VERIFIED ACTIVE)
+- app/login/page.tsx: User authentication login page (VERIFIED ACTIVE)
+- app/logout/route.ts: Session destruction API GET handler (VERIFIED ACTIVE)
+- app/org/challenges/new/page.tsx: Host challenge creation page (VERIFIED ACTIVE)
+- app/org/challenges/[id]/page.tsx: Host challenge management & submission review page (VERIFIED ACTIVE)
+- app/org/challenges/[id]/edit/page.tsx: Host challenge brief editing page (VERIFIED ACTIVE)
+- app/org/dashboard/page.tsx: Host organization dashboard (VERIFIED ACTIVE)
+- app/organization/signup/page.tsx: Host organization registration page (VERIFIED ACTIVE)
+- app/privacy/page.tsx: Privacy policy document page (VERIFIED ACTIVE)
+- app/rules/page.tsx: Official league rules document page (VERIFIED ACTIVE)
+- app/student/my-challenges/page.tsx: Student participant dashboard (VERIFIED ACTIVE)
+- app/student/profile/page.tsx: Student profile management page (VERIFIED ACTIVE)
+- app/student/signup/page.tsx: 4-step student registration page (VERIFIED ACTIVE)
+- app/terms/page.tsx: Terms of use document page (VERIFIED ACTIVE)
+
+COMPONENTS & FORMS (components/):
+- components/navbar.tsx: Sitewide top navigation bar (VERIFIED ACTIVE)
+- components/footer.tsx: Sitewide footer (VERIFIED ACTIVE)
+- components/auth/auth-shell.tsx: Split visual layout wrapper for auth pages (VERIFIED ACTIVE)
+- components/forms/student-signup-form.tsx: 4-step student registration form (VERIFIED ACTIVE)
+- components/forms/organization-signup-form.tsx: Organization registration form (VERIFIED ACTIVE)
+- components/forms/login-form.tsx: User login form (VERIFIED ACTIVE)
+- components/forms/invite-signup-form.tsx: Invited member signup form (VERIFIED ACTIVE)
+- components/forms/profile-form.tsx: Student profile edit form (VERIFIED ACTIVE)
+- components/forms/challenge-form.tsx: Challenge brief creation/edit form (VERIFIED ACTIVE)
+- components/forms/team-registration-form.tsx: Team creation & member invite form (VERIFIED ACTIVE)
+- components/forms/submission-form.tsx: Solution link submission form (VERIFIED ACTIVE)
+
+BACKEND MODULES & LIBRARIES (lib/):
+- lib/actions.ts: Exported server action implementations (VERIFIED ACTIVE)
+- lib/auth.ts: Authentication session, JWT signing, password hashing, role helpers (VERIFIED ACTIVE)
+- lib/challenges.ts: Challenge status filters, lifecycle checks, date helpers (VERIFIED ACTIVE)
+- lib/db-types.ts: Enum constants for Role, ChallengeCategory, ChallengeStatus, TeamStatus (VERIFIED ACTIVE)
+- lib/email.ts: Resend API integration with console fallback (VERIFIED ACTIVE)
+- lib/forms.ts: Form state helpers, validation error extraction (VERIFIED ACTIVE)
+- lib/invites.ts: Token generation, SHA-256 hashing, expiry calculations (VERIFIED ACTIVE)
+- lib/prisma.ts: Prisma client initialization (VERIFIED ACTIVE)
+- lib/utils.ts: String normalization, slugification, app URL resolution (VERIFIED ACTIVE)
+
+DATABASE & SCRIPTS (prisma/, scripts/, tests/):
+- prisma/schema.prisma: Prisma ORM data models (VERIFIED ACTIVE)
+- prisma/migrations/20260702000000_init/migration.sql: Database schema initialization (VERIFIED ACTIVE)
+- prisma/migrations/20260720000000_add_organization_contact_role/migration.sql: Contact role addition (VERIFIED ACTIVE)
+- prisma/migrations/20260720010000_prevent_duplicate_awards/migration.sql: Unique award index (VERIFIED ACTIVE)
+- scripts/build-next.mjs: Production build script (VERIFIED ACTIVE)
+- scripts/prepare-sites-build.mjs: Cloudflare bundle script (VERIFIED ACTIVE)
+- scripts/seed-admin.mjs: Admin user database seed script (VERIFIED ACTIVE)
+- tests/security-workflow-contracts.test.mjs: Contract unit test suite (VERIFIED ACTIVE)
+
+
+--------------------------------------------------------------------------------
+3. COMPLETE ROUTE AND SERVER ACTION MANIFEST
+--------------------------------------------------------------------------------
+ROUTES (23 total):
+R01: GET / | Public | All Roles | Home landing page | Evidence: app/page.tsx:L1-L20
+R02: GET /about | Public | All Roles | About mission page | Evidence: app/about/page.tsx:L1-L20
+R03: GET /admin | Protected | ADMIN | Admin challenge list | Evidence: app/admin/page.tsx:L1-L30
+R04: GET /admin/challenges/[id] | Protected | ADMIN | Admin review & award page | Evidence: app/admin/challenges/[id]/page.tsx:L1-L40
+R05: GET /challenges | Public | All Roles | Challenge directory | Evidence: app/challenges/page.tsx:L1-L30
+R06: GET /challenges/[slug] | Public | All Roles | Challenge brief detail | Evidence: app/challenges/[slug]/page.tsx:L1-L40
+R07: GET /challenges/[slug]/register | Protected | STUDENT | Team registration | Evidence: app/challenges/[slug]/register/page.tsx:L1-L30
+R08: GET /challenges/[slug]/submit | Protected | STUDENT (Lead) | Solution submission | Evidence: app/challenges/[slug]/submit/page.tsx:L1-L35
+R09: GET /invite/[token] | Public | All Roles | Invite acceptance page | Evidence: app/invite/[token]/page.tsx:L1-L30
+R10: GET /leaderboard | Public | All Roles | League scoreboard | Evidence: app/leaderboard/page.tsx:L1-L25
+R11: GET /login | Public | All Roles | User login page | Evidence: app/login/page.tsx:L1-L25
+R12: GET /logout | Public | All Roles | Destroys session cookie | Evidence: app/logout/route.ts:L1-L8
+R13: GET /org/challenges/new | Protected | ORGANIZATION | Host challenge form | Evidence: app/org/challenges/new/page.tsx:L1-L25
+R14: GET /org/challenges/[id] | Protected | ORGANIZATION | Host challenge dashboard | Evidence: app/org/challenges/[id]/page.tsx:L1-L35
+R15: GET /org/challenges/[id]/edit | Protected | ORGANIZATION | Host edit brief form | Evidence: app/org/challenges/[id]/edit/page.tsx:L1-L30
+R16: GET /org/dashboard | Protected | ORGANIZATION | Host main dashboard | Evidence: app/org/dashboard/page.tsx:L1-L25
+R17: GET /organization/signup | Public | All Roles | Host registration form | Evidence: app/organization/signup/page.tsx:L1-L20
+R18: GET /privacy | Public | All Roles | Privacy policy page | Evidence: app/privacy/page.tsx:L1-L15
+R19: GET /rules | Public | All Roles | Official rules page | Evidence: app/rules/page.tsx:L1-L15
+R20: GET /student/my-challenges | Protected | STUDENT | Student dashboard | Evidence: app/student/my-challenges/page.tsx:L1-L30
+R21: GET /student/profile | Protected | STUDENT | Student profile edit | Evidence: app/student/profile/page.tsx:L1-L25
+R22: GET /student/signup | Public | All Roles | Student signup form | Evidence: app/student/signup/page.tsx:L1-L17
+R23: GET /terms | Public | All Roles | Terms of use page | Evidence: app/terms/page.tsx:L1-L15
+
+SERVER ACTIONS (13 total in lib/actions.ts):
+1. studentSignupAction | Public | studentSchema | Creates User & StudentProfile | Evidence: lib/actions.ts:L290
+2. organizationSignupAction | Public | organizationSchema | Creates User & OrganizationProfile | Evidence: lib/actions.ts:L331
+3. loginAction | Public | loginSchema | Reads User & sets session cookie | Evidence: lib/actions.ts:L406
+4. updateStudentProfileAction | STUDENT | studentProfileSchema | Updates StudentProfile | Evidence: lib/actions.ts:L443
+5. createChallengeAction | ORGANIZATION | challengeSchema | Creates Challenge (DRAFT) | Evidence: lib/actions.ts:L541
+6. updateChallengeAction | ORGANIZATION | challengeSchema | Updates Challenge | Evidence: lib/actions.ts:L561
+7. createTeamAction | STUDENT | teamSchema | Creates Team & TeamMember | Evidence: lib/actions.ts:L623
+8. acceptInviteAction | Member Session | Token match | Updates TeamMember (ACCEPTED) | Evidence: lib/actions.ts:L799
+9. declineInviteAction | Member Session | Token match | Updates TeamMember (DECLINED) | Evidence: lib/actions.ts:L839
+10. inviteStudentSignupAction | Public Token | studentSchema | Creates User & accepts invite | Evidence: lib/actions.ts:L857
+11. submitSolutionAction | STUDENT (Lead) | submissionSchema | Creates/updates Submission | Evidence: lib/actions.ts:L924
+12. adminChallengeAction | ADMIN | Transition Matrix | Updates Challenge.status | Evidence: lib/actions.ts:L988
+13. addAwardAction | ADMIN | Award Schema | Creates Award & assigns points | Evidence: lib/actions.ts:L1051
+
+
+--------------------------------------------------------------------------------
+4. DATABASE MODEL DICTIONARY & CONSENT EVIDENCE MAP
+--------------------------------------------------------------------------------
+MODELS (11 total in prisma/schema.prisma):
+1. User: Primary credentials (id, email, passwordHash, role, createdAt, updatedAt)
+2. StudentProfile: Student info (userId, firstName, lastName, grade, schoolName, city, state, country, interests, isPublic, parentConsent)
+3. OrganizationProfile: Host info (userId, organizationName, organizationType, website, contactFirstName, contactLastName, contactRole, city, state, country, description, status)
+4. Challenge: Brief details (organizationId, title, slug, category, shortSummary, problemStatement, background, goal, deliverables, minTeamSize, maxTeamSize, registrationOpenAt, registrationCloseAt, submissionDeadline, judgingStartsAt, winnerAnnouncementAt, prizeDescription, prizeCashValue, recognitionDescription, rubricJson, status, adminReviewNotes, isFeatured)
+5. Team: Challenge team (challengeId, teamName, leadStudentId, status)
+6. TeamMember: Member status (teamId, studentId, invitedName, invitedEmail, role, status, inviteTokenHash, inviteTokenExpiresAt, respondedAt)
+7. Submission: Solution submission (teamId, challengeId, title, summary, submissionLink, fileUrl, notes, status, submittedAt)
+8. Award: Challenge awards (challengeId, teamId, awardType, points, judgeComment)
+9. WaitlistSignup: Pre-launch waitlist (name, email, grade, school, interests)
+10. OrganizationLead: Pre-launch host inquiries (organizationName, organizationType, contactName, email, challengeIdea)
+11. AuditLog: Admin log (userId, action, entityType, entityId, metadataJson)
+
+LEGAL CONSENT STORAGE LOCATION MAP:
+- Student Signature: Form State (FormData) - Discarded post-validation (Not in Schema) | Evidence: student-signup-form.tsx:L128
+- Guardian Signature: Form State (FormData) - Discarded post-validation (Not in Schema) | Evidence: student-signup-form.tsx:L124
+- Guardian Name: Form State (FormData) - Discarded post-validation (Not in Schema) | Evidence: student-signup-form.tsx:L118
+- Guardian Email: Form State (FormData) - Discarded post-validation (Not in Schema) | Evidence: student-signup-form.tsx:L120
+- Age Confirmation (13+): Form Checkbox - Converted to parentConsent Boolean | Evidence: lib/actions.ts:L284
+- Parent Consent Flag: StudentProfile.parentConsent - Persisted in SQLite / D1 Database | Evidence: schema.prisma:L35
+- Terms / Policy Version: Unversioned Checkbox (agree) - Discarded post-validation | Evidence: lib/actions.ts:L285
+- Acceptance IP / User Agent: Unrecorded - Not tracked in database | Evidence: lib/actions.ts:L290
+
+
+--------------------------------------------------------------------------------
+5. AUTHENTICATION & AUTHORIZATION AUDIT
+--------------------------------------------------------------------------------
+AUTHENTICATION ENGINE:
+- Session Token: JSON Web Token (JWT) signed with HS256 algorithm
+- Session Expiry: 14 days (.setExpirationTime("14d"))
+- Cookie Name: solvesprint_session (HttpOnly: true, SameSite: "lax", Secure: process.env.NODE_ENV === "production", Path: "/", MaxAge: 14 days)
+- Password Storage: bcryptjs with work factor 12 (bcrypt.hash(password, 12))
+- Secret Fallback: Hardcoded fallback "dev-only-change-this-solvesprint-secret" used if process.env.AUTH_SECRET is omitted in non-production.
+
+AUTHORIZATION MATRIX:
+- Unauthenticated Visitor: View public active challenges & leaderboard; cannot access admin, host dashboard, or submit.
+- Student (Non-Member): View public challenges; can create teams or accept invites.
+- Student (Team Member): View team submission details; cannot edit submission link.
+- Student (Team Lead): View and submit solution links for registered team (submitSolutionAction).
+- Organization Host: Scoped access to own hosted challenges and student submissions (app/org/challenges/[id]/page.tsx).
+- System Administrator: Full platform administrative access (requireAdmin()).
+
+
+--------------------------------------------------------------------------------
+6. CONSENT, AGE POLICY, TEAMS, AND SUBMISSIONS AUDIT
+--------------------------------------------------------------------------------
+UNDER-13 COPPA ANALYSIS:
+- Enforcement: Mandatory checkbox "I confirm that I am at least 13 years old. (Users must be 13+ to join SolveSprint)."
+- Client & Server Validation: Registration blocks submission if is13Plus is unchecked. Code does not knowingly register children under 13.
+
+UNDER-18 GUARDIAN POLICY (AGES 13-17):
+- Form Controls: Collects Parent Name, Parent Email, Parent Electronic Signature, and Student Electronic Signature on Step 3.
+- Verification Gap: Upon form submission, the account is IMMEDIATELY CREATED AND LOGGED IN. No double-opt-in email link is dispatched to the parent email address before account activation.
+
+TEAM INVITATION SECURITY:
+- Tokens: Cryptographic random 32-byte hex strings; stored as SHA-256 hash (TeamMember.inviteTokenHash). Raw token never stored in DB.
+- Expiration: 7-day expiration (inviteExpiry()).
+- Email Binding: acceptInviteAction verifies logged-in user email matches TeamMember.invitedEmail.
+
+SUBMISSION & LINK SECURITY:
+- Submission URLs: Accepts external URLs (submissionLink, fileUrl) validated via Zod z.string().url().
+- Link Rendering: Rendered with target="_blank" and rel="noreferrer noopener".
+- Server Fetching: Application server DOES NOT fetch or scan external URLs for malware.
+
+
+--------------------------------------------------------------------------------
+7. VENDOR, COOKIE, LOGGING, AND RETENTION DISCLOSURES
+--------------------------------------------------------------------------------
+VENDORS:
+1. Resend: Transactional email delivery (lib/email.ts). Receives recipient email & invite links.
+2. Cloudflare D1 / LibSQL: Edge database storage (prisma.ts). Stores platform records.
+3. OpenNext / Wrangler: Edge application deployment (package.json). Processes HTTP request traffic.
+
+COOKIE PROOF:
+- 1 active cookie: solvesprint_session (HttpOnly, SameSite=Lax).
+- 0 tracking cookies, 0 localStorage, 0 sessionStorage, 0 IndexedDB, 0 analytics scripts.
+
+SERVER LOGGING:
+- Console Fallback: When RESEND_API_KEY is unset, email bodies and invite links are printed to server stdout via console.log.
+- Credentials: Passwords, bcrypt hashes, and JWT secrets are never logged.
+
+DATA RETENTION:
+- NO IMPLEMENTED AUTOMATED TTL PURGE RULE. Data persists until manually deleted by DB administrator.
+- Account Deletion: No self-service deletion UI exists in student profile settings.
+
+
+--------------------------------------------------------------------------------
+8. POLICY REALITY MATRIX (EVALUATION OF STATEMENTS)
+--------------------------------------------------------------------------------
+1. Privacy Policy Sec 1 ("We collect info you provide"): MATCH. Form fields map to StudentProfile & OrganizationProfile.
+2. Privacy Policy Sec 2 ("Parent permission for under 18"): PARTIAL. Form collects parent details, but sends no parent verification email link.
+3. Privacy Policy Sec 3 ("No third-party data sales"): MATCH. No advertising trackers or data-selling APIs exist in code.
+4. Privacy Policy Sec 4 ("Profiles private by default"): MATCH. isPublic defaults to false in StudentProfile schema.
+5. Privacy Policy Sec 5 ("Secure auth cookies"): MATCH. solvesprint_session is HttpOnly with SameSite=Lax.
+6. Terms Sec 1 ("Users must be 13+"): MATCH. is13Plus checkbox required during registration.
+7. Terms Sec 4 ("Students retain submission ownership"): MATCH. Submissions store URL references; no IP transfer occurs.
+8. Terms Sec 6 ("Account terminations upon request"): MATCH. Manual admin intervention required; no self-service button.
+9. Rules Sec 2 ("Team size limits enforced"): MATCH. Team registration checks minTeamSize and maxTeamSize.
+10. Rules Sec 5 ("Deadline enforcement"): MATCH. submitSolutionAction enforces challenge.submissionDeadline.
+
+
+--------------------------------------------------------------------------------
+9. CORRECTED PRIORITY FINDINGS LEDGER
+--------------------------------------------------------------------------------
+PRIORITY 0 (CRITICAL):
+- FINDING-P0-01: Default Static JWT Secret Fallback in Non-Production Mode (lib/auth.ts:L11-L17). Hardcoded string "dev-only-change-this-solvesprint-secret" used if AUTH_SECRET is missing and NODE_ENV != "production", allowing session token forgery.
+- FINDING-P0-02: Unverified Guardian Email & Immediate Minor Account Activation (lib/actions.ts:L281-L300). Under-18 registration collects parent info but creates and logs in user immediately without parent verification email loop.
+
+PRIORITY 1 (PRE-PUBLIC LAUNCH):
+- FINDING-P1-01: GET-Method Session Logout Endpoint Susceptible to CSRF (app/logout/route.ts:L4-L7). GET /logout allows third-party sites to trigger CSRF logouts via <img> tags.
+- FINDING-P1-02: Absence of Authentication Throttling & Bot Rate Limiting (lib/actions.ts:L265). Login and signup actions lack rate limiting against credential stuffing.
+- FINDING-P1-03: Unverified Organization Account Status Defaulting to ACTIVE (lib/actions.ts:L360-L380). New org profiles receive ACTIVE status immediately without manual admin approval.
+
+PRIORITY 2 (PRE-SUBMISSIONS / PRIZES):
+- FINDING-P2-01: Unchecked External Submission URLs (lib/actions.ts:L924). Solution URLs are presented to hosts/admins without malware scanning or domain blocklist warnings.
+- FINDING-P2-02: Missing Content Security Policy (CSP) & Security Headers (next.config.mjs). Lack of CSP & X-Frame-Options leaves site exposed to clickjacking.
+- FINDING-P2-03: Absence of Dedicated JUDGE Role & Permission Boundaries (lib/db-types.ts, lib/auth.ts). Judging relies solely on ADMIN role rather than scoped JUDGE permissions.
+
+PRIORITY 3 (OPERATIONAL HARDENING):
+- FINDING-P3-01: Lack of Self-Service Account Deletion & Data Export (app/student/profile/page.tsx). No user self-deletion UI.
+- FINDING-P3-02: Hard Cascade Database Deletions (prisma/schema.prisma). Cascading hard deletes replace recoverable soft-deletes.
+- FINDING-P3-03: Lack of Automated Data Retention Purge TTL. No automated retention cleanup scripts.
+
+
+--------------------------------------------------------------------------------
+10. HUMAN DECISIONS REQUIRED LEDGER
+--------------------------------------------------------------------------------
+1. Legal Operating Entity Name & Address: What is the formal corporate entity name, state of incorporation, and business mailing address?
+2. Designated Officers: Who is the designated COPPA Privacy Officer, DMCA Agent, and emergency safety lead?
+3. Verifiable Parental Consent Mechanism: Will SolveSprint implement an automated email confirmation double-opt-in loop or integrate an accredited 3rd-party identity verification service?
+4. Tax Handling & 1099 Thresholds: What entity will collect IRS W-9 info and issue tax reporting forms for student prize recipients? (Requires current legal & tax counsel review).
+5. School Partnership Contracts: Will SolveSprint execute formal FERPA school-directed use contracts with participating school districts?
+
+================================================================================
+END OF AUDIT REPORT
+================================================================================
