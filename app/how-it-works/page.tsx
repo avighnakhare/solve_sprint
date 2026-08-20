@@ -1,291 +1,208 @@
 import Link from "next/link";
-import Image from "next/image";
-import type { Metadata } from "next";
+import { TopoPattern } from "@/components/brand/TopoPattern";
+import { TrailMarker } from "@/components/brand/TrailMarker";
+import { TrailPath } from "@/components/brand/TrailPath";
+import { FAQItem } from "@/components/editorial/FAQItem";
+import { PhotoFrame } from "@/components/editorial/PhotoFrame";
+import { SectionIntro } from "@/components/editorial/SectionIntro";
+import { APPROVED_IMAGES } from "@/components/media/approved-media";
 
-export const metadata: Metadata = {
-  title: "How It Works | SolveSprint™ In-Person Event Process",
-  description:
-    "Learn how SolveSprint connects local organizations with high school student teams for in-person innovation challenges, live pitches, and professional judging."
+export const metadata = {
+  title: "How It Works | SolveSprint™",
+  description: "A clear path from problem to presentation. Learn how a SolveSprint challenge day works for students, organizations, and volunteers.",
 };
 
-const processSteps = [
-  {
-    number: "01",
-    audience: "ORGANIZATIONS",
-    heading: "Bring a problem worth solving.",
-    paragraph:
-      "A business, nonprofit, startup, university group, or community organization shares a real problem that is specific enough for students to explore. The problem cannot require confidential, regulated, or personally identifiable information.",
-    details: [
-      "A focused problem with useful background",
-      "A representative available to answer limited questions"
-    ]
-  },
-  {
-    number: "02",
-    audience: "SOLVESPRINT",
-    heading: "Turn the problem into a fair student brief.",
-    paragraph:
-      "SolveSprint works with the organization to clarify the goal, expected deliverables, event rules, and judging criteria. The final brief should be understandable to students and realistic within the available time.",
-    details: [
-      "One consistent brief for every participating team",
-      "Clear eligibility, safety, and evaluation rules"
-    ]
-  },
-  {
-    number: "03",
-    audience: "STUDENTS",
-    heading: "Register interest and form a team.",
-    paragraph:
-      "Students tell us they are interested in participating. Depending on the event, they may register with teammates or ask to be matched with other participants.",
-    details: [
-      "Exact eligibility and team size are published before registration",
-      "An interest form does not guarantee a confirmed place"
-    ]
-  },
-  {
-    number: "04",
-    audience: "EVENT DAY",
-    heading: "Research, build, and prepare.",
-    paragraph:
-      "Teams study the brief, decide how to approach the problem, and develop a response. Their work may include research, a prototype, a campaign, a model, a process improvement, or another challenge-appropriate deliverable.",
-    details: [
-      "Teams manage their own approach and time",
-      "Volunteers support logistics without solving the challenge for them"
-    ]
-  },
-  {
-    number: "05",
-    audience: "FINAL PRESENTATIONS",
-    heading: "Present the solution and receive feedback.",
-    paragraph:
-      "Teams explain their reasoning and proposed solution to a review panel. Judges use the published criteria, ask questions, and provide feedback. Recognition or awards depend on the rules of that specific event.",
-    details: [
-      "Presentation formats and judging criteria are announced in advance",
-      "Student work is handled according to the event rules and participation terms"
-    ]
-  }
-] as const;
-
-const eventSchedule = [
-  { step: "01", title: "Arrival and check-in" },
-  { step: "02", title: "Challenge briefing" },
-  { step: "03", title: "Team work period" },
-  { step: "04", title: "Presentation preparation" },
-  { step: "05", title: "Final pitches" },
-  { step: "06", title: "Feedback and recognition" }
-] as const;
-
 export default function HowItWorksPage() {
+  const steps = [
+    {
+      num: "01",
+      title: "Receive the Challenge Brief",
+      desc: "At the start of the event day, local organization leaders present real, age-appropriate problem statements directly to all participating student teams.",
+    },
+    {
+      num: "02",
+      title: "Team Formation & Brainstorming",
+      desc: "Students work in small teams (typically 2 to 4 students). Volunteers and mentors are available in the room to help clarify questions and guide ideation.",
+    },
+    {
+      num: "03",
+      title: "Prototype & Solution Shaping",
+      desc: "Teams organize their thoughts into a concrete proposal, pitch outline, or basic visual prototype using provided materials and workspace tools.",
+    },
+    {
+      num: "04",
+      title: "Live Student Presentations",
+      desc: "Each team presents their concept to a panel of community judges, mentor advisors, and organization representatives in a supportive atmosphere.",
+    },
+    {
+      num: "05",
+      title: "Feedback & Recognition",
+      desc: "Teams receive structured feedback, certificate recognition, and actionable advice on how their project ideas could be carried forward.",
+    },
+  ];
+
+  const faqs = [
+    {
+      q: "Do students need to prepare anything before the event?",
+      a: "No prior preparation is required. Challenge briefs are introduced at the start of the event day, giving all participants an equal starting point.",
+    },
+    {
+      q: "What is the typical team size?",
+      a: "Teams are usually made up of 2 to 4 high school students. You can sign up with friends or be placed with a team on event morning.",
+    },
+    {
+      q: "How long does a SolveSprint event last?",
+      a: "Specific event schedules vary by location, but most challenge days run for approximately 4 to 6 hours, including brief release, building time, presentations, and lunch.",
+    },
+    {
+      q: "Are there entry fees or costs to attend?",
+      a: "No. SolveSprint events are free for high school students.",
+    },
+  ];
+
   return (
-    <div className="bg-[#FFF9F0] min-h-screen text-slate-900">
-      {/* 1. Page Hero */}
-      <section className="relative border-b border-slate-900/10 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-            {/* Left: Left-aligned editorial text */}
-            <div className="lg:col-span-7">
-              <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">
-                HOW A SOLVESPRINT EVENT WORKS
-              </span>
-              <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
-                From a real brief to a live final pitch.
-              </h1>
-              <p className="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed max-w-2xl">
-                Local organizations bring the challenge. Student teams research, build, and present their response at an in-person SolveSprint event.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link
-                  href="/get-involved"
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-orange-600 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-orange-700 shadow-sm"
-                >
-                  Get Involved
-                </Link>
-                <Link
-                  href="/student"
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-slate-900/15 bg-white px-6 py-3 text-[15px] font-semibold text-slate-900 transition-all hover:bg-slate-50 shadow-sm"
-                >
-                  For Students
-                </Link>
-              </div>
-            </div>
-
-            {/* Right: Authentic Event-Related Image */}
-            <div className="lg:col-span-5">
-              <div className="relative overflow-hidden rounded-2xl border border-slate-900/10 shadow-lg aspect-[4/3]">
-                <Image
-                  src="/images/about/student-team-building.png"
-                  alt="Student team working together during an in-person event"
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 45vw"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. Event Process Timeline */}
-      <section className="py-20 lg:py-32 border-b border-slate-900/10">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
-            {/* Left Column (Sticky anchor heading) */}
-            <div className="lg:col-span-4 lg:sticky lg:top-28">
-              <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">
-                EVENT PROCESS
-              </span>
-              <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-                The path from problem to presentation
-              </h2>
-              <p className="mt-4 text-base lg:text-lg text-slate-600 leading-relaxed">
-                Exact timing and rules may differ by event.
-              </p>
-              <div className="mt-8 hidden lg:block h-32 w-0.5 bg-gradient-to-b from-orange-500/40 to-transparent" />
-            </div>
-
-            {/* Right Column (Continuous timeline rows) */}
-            <div className="lg:col-span-8 divide-y divide-slate-900/15">
-              {processSteps.map((step) => (
-                <div key={step.number} className="py-10 lg:py-14 first:pt-0 last:pb-0">
-                  <div className="flex items-baseline gap-4">
-                    <span className="text-5xl lg:text-6xl font-black text-orange-600 tracking-tight font-mono">
-                      {step.number}
-                    </span>
-                    <span className="text-xs lg:text-sm font-bold tracking-widest uppercase text-slate-500">
-                      {step.audience}
-                    </span>
-                  </div>
-
-                  <h3 className="mt-3 text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
-                    {step.heading}
-                  </h3>
-
-                  <p className="mt-4 text-base lg:text-lg text-slate-700 leading-relaxed max-w-3xl">
-                    {step.paragraph}
-                  </p>
-
-                  <ul className="mt-6 space-y-2 text-sm lg:text-base text-slate-600">
-                    {step.details.map((detail) => (
-                      <li key={detail} className="flex items-start gap-3">
-                        <span className="mt-1.5 h-2 w-2 rounded-full bg-orange-500 shrink-0" />
-                        <span>{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Event-Day Rhythm */}
-      <section className="py-20 lg:py-28 bg-[#FFFDF9] border-b border-slate-900/10">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">
-              EVENT SCHEDULE
-            </span>
-            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
-              A look at event day
-            </h2>
-          </div>
-
-          {/* Linear schedule flow with oversized numbers & connecting rules */}
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {eventSchedule.map((item) => (
-              <div
-                key={item.step}
-                className="relative p-6 border-l-2 border-orange-500/40 bg-[#FFF9F0] rounded-r-xl"
-              >
-                <span className="text-xs font-mono font-bold tracking-wider text-orange-600 uppercase">
-                  Phase {item.step}
-                </span>
-                <h3 className="mt-2 text-xl font-bold text-slate-900">{item.title}</h3>
-              </div>
-            ))}
-          </div>
-
-          <p className="mt-12 text-base lg:text-lg text-slate-600 leading-relaxed border-t border-slate-900/10 pt-6">
-            The exact schedule, challenge format, eligibility requirements, team size, deliverables, and judging process will be provided for each event.
+    <div className="w-full space-y-20 sm:space-y-28 py-12">
+      {/* ── HERO ── */}
+      <section className="site-container relative pt-12 sm:pt-16">
+        <TopoPattern opacity={0.05} />
+        <div className="max-w-3xl space-y-6">
+          <p className="trail-label text-tangerine font-bold">
+            EVENT FORMAT &amp; TIMELINE
+          </p>
+          <h1 className="display-hero text-ink">
+            A clear path from problem to presentation.
+          </h1>
+          <p className="body-large text-ink-muted">
+            SolveSprint challenge days are structured to give high school students a focused, hands-on experience without confusion or unrealistic pressure.
           </p>
         </div>
       </section>
 
-      {/* 4. Audience Pathways */}
-      <section className="py-20 lg:py-28 border-b border-slate-900/10">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="grid gap-12 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-900/15">
-            {/* Left: For Students */}
-            <div className="lg:pr-12 pt-8 lg:pt-0">
-              <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">
-                FOR STUDENTS
-              </span>
-              <h2 className="mt-3 text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">
-                Interested in solving a real problem with a team?
-              </h2>
-              <p className="mt-4 text-base lg:text-lg text-slate-600 leading-relaxed">
-                Share your interest and we will contact you when event details and registration are available.
-              </p>
-              <div className="mt-8">
-                <Link
-                  href="/student"
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-orange-600 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-orange-700 shadow-sm"
-                >
-                  Student interest form
-                </Link>
-              </div>
-            </div>
+      {/* ── 5-STEP VERTICAL ROUTE ── */}
+      <section className="site-container space-y-12">
+        <SectionIntro
+          label="THE 5-STEP TRAIL"
+          heading="What happens on event day"
+        />
 
-            {/* Right: For Organizations */}
-            <div className="lg:pl-12 pt-8 lg:pt-0">
-              <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">
-                FOR ORGANIZATIONS
-              </span>
-              <h2 className="mt-3 text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">
-                Have a problem students could explore?
-              </h2>
-              <p className="mt-4 text-base lg:text-lg text-slate-600 leading-relaxed">
-                Tell us about your organization and we will contact you to discuss whether it fits a future event.
-              </p>
-              <div className="mt-8">
-                <Link
-                  href="/organization"
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-slate-900/15 bg-white px-6 py-3 text-[15px] font-semibold text-slate-900 transition-all hover:bg-slate-50 shadow-sm"
-                >
-                  Propose a challenge
-                </Link>
+        <div className="relative pl-4 sm:pl-8 space-y-10 sm:space-y-12">
+          {/* Vertical Trail SVG line */}
+          <div className="absolute left-7 top-4 bottom-4 w-1 hidden sm:block pointer-events-none">
+            <TrailPath variant="vertical" strokeWidth={5} />
+          </div>
+
+          {steps.map((step) => (
+            <div key={step.num} className="relative flex flex-col sm:flex-row items-start gap-4 sm:gap-8 bg-white border-2 border-ink rounded-[20px] p-6 sm:p-8 shadow-[4px_4px_0px_0px_#233047] hover:-translate-y-1 transition-all">
+              <TrailMarker number={step.num} size="lg" />
+              <div className="space-y-2">
+                <h3 className="heading-support text-ink">{step.title}</h3>
+                <p className="body-standard text-ink-muted">{step.desc}</p>
               </div>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── WHAT STUDENTS RECEIVE BEFORE & DURING ── */}
+      <section className="site-container">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Before */}
+          <div className="rounded-[28px] border-2 border-ink bg-[#E2F1F5] p-8 sm:p-10 space-y-4 shadow-[5px_5px_0px_0px_#233047]">
+            <span className="inline-block px-3 py-1 rounded-[8px] border-2 border-ink bg-white font-mono text-xs font-bold text-ink uppercase tracking-wider shadow-[2px_2px_0px_0px_#233047]">
+              BEFORE THE EVENT
+            </span>
+            <h3 className="heading-support text-ink">What you receive</h3>
+            <ul className="space-y-3 body-standard text-ink font-medium">
+              <li className="flex items-start gap-2">
+                <span className="text-tangerine font-bold">•</span>
+                <span>Early event schedule and venue arrival details</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-tangerine font-bold">•</span>
+                <span>Team registration confirmation or matching options</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-tangerine font-bold">•</span>
+                <span>Participant checklist and Code of Conduct</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* During */}
+          <div className="rounded-[28px] border-2 border-ink bg-[#FDECE2] p-8 sm:p-10 space-y-4 shadow-[5px_5px_0px_0px_#233047]">
+            <span className="inline-block px-3 py-1 rounded-[8px] border-2 border-ink bg-white font-mono text-xs font-bold text-ink uppercase tracking-wider shadow-[2px_2px_0px_0px_#233047]">
+              DURING THE EVENT
+            </span>
+            <h3 className="heading-support text-ink">What is provided</h3>
+            <ul className="space-y-3 body-standard text-ink font-medium">
+              <li className="flex items-start gap-2">
+                <span className="text-tangerine font-bold">•</span>
+                <span>Dedicated workspace, paper, markers, and digital resources</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-tangerine font-bold">•</span>
+                <span>Access to volunteer mentors and organization representatives</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-tangerine font-bold">•</span>
+                <span>Snacks, refreshments, and presentation stage time</span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* 5. Final CTA */}
-      <section className="py-20 lg:py-28 bg-[#101828] text-white">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-              There is a place for you in the room.
-            </h2>
-            <p className="mt-6 text-lg sm:text-xl text-slate-300 leading-relaxed">
-              Participate as a student, bring a challenge, volunteer at the event, or help coordinate outreach.
+      {/* ── PHOTO FEATURE ── */}
+      <section className="site-container">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-[28px] border-2 border-ink bg-[#FFF6DB] p-8 sm:p-12 shadow-[6px_6px_0px_0px_#F47731]">
+          <div className="lg:col-span-6 space-y-6">
+            <span className="inline-block px-3 py-1 rounded-[8px] border-2 border-ink bg-white font-mono text-xs font-bold text-ink uppercase tracking-wider shadow-[2px_2px_0px_0px_#233047]">
+              ORGANIZATIONS &amp; VOLUNTEERS
+            </span>
+            <h2 className="display-section text-ink">Guidance without micro-management.</h2>
+            <p className="body-large text-ink font-medium">
+              Adults in the room serve as sounding boards and logistics supporters. Students retain full ownership of their ideas and presentations.
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Link
-                href="/get-involved"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-orange-600 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-orange-700 shadow-sm"
-              >
-                Get involved
-              </Link>
-              <Link
-                href="/about#contact"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-white/20"
-              >
-                Contact SolveSprint
-              </Link>
-            </div>
+          </div>
+          <div className="lg:col-span-6">
+            <PhotoFrame
+              image={APPROVED_IMAGES["live-presentation"]}
+              aspect="landscape"
+              caption
+              captionText="PRESENTATION STAGE IN ACTION"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="site-container max-w-3xl space-y-8">
+        <SectionIntro
+          label="FREQUENTLY ASKED QUESTIONS"
+          heading="Common questions about the day"
+        />
+
+        <div className="border-t-2 border-ink">
+          {faqs.map((faq) => (
+            <FAQItem key={faq.q} question={faq.q} answer={faq.a} />
+          ))}
+        </div>
+      </section>
+
+      {/* ── GET INVOLVED CTA ── */}
+      <section className="site-container">
+        <div className="rounded-[28px] border-2 border-ink bg-ink text-paper p-10 sm:p-16 text-center space-y-6 shadow-[8px_8px_0px_0px_#F47731]">
+          <h2 className="display-section text-paper">Ready to experience a challenge day?</h2>
+          <p className="body-large text-paper-light/90 max-w-xl mx-auto">
+            Submit your interest to receive notification as soon as the first event date and location are confirmed.
+          </p>
+          <div>
+            <Link
+              href="/get-involved"
+              className="inline-flex items-center justify-center min-h-[58px] min-w-[156px] rounded-[14px] border-2 border-ink bg-sun px-8 py-3.5 font-body font-bold text-[17px] leading-[1.1] text-ink shadow-[3px_3px_0px_0px_#233047] hover:-translate-y-0.5 hover:bg-tangerine hover:shadow-[5px_5px_0px_0px_#233047] active:translate-y-0.5 transition-all w-full sm:w-auto"
+            >
+              Get involved
+            </Link>
           </div>
         </div>
       </section>

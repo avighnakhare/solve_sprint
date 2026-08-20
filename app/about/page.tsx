@@ -1,186 +1,131 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
+import { TopoPattern } from "@/components/brand/TopoPattern";
+import { EventStatus } from "@/components/editorial/EventStatus";
+import { FounderProfile } from "@/components/editorial/FounderProfile";
+import { SectionIntro } from "@/components/editorial/SectionIntro";
+import { APPROVED_IMAGES } from "@/components/media/approved-media";
+import { CONTACT_CONFIG } from "@/lib/site-config";
 
-export const metadata: Metadata = {
-  title: "About SolveSprint™ | Student Innovation Events",
-  description:
-    "SolveSprint was started by three North Carolina high school students to bridge the gap between classroom learning and real-world problem solving through in-person student innovation events."
+export const metadata = {
+  title: "About SolveSprint™",
+  description: "Learn why SolveSprint was founded by high school students and how we are building an in-person challenge event for Charlotte-area students.",
 };
 
-const processSteps = [
-  {
-    number: "01",
-    title: "A host organization brings a real problem",
-    description:
-      "A local business, startup, nonprofit, or community group turns a real operational or strategic need into a focused challenge prompt."
-  },
-  {
-    number: "02",
-    title: "Student teams register & review the brief",
-    description:
-      "High school students form teams around shared interests, review prompt requirements, and prepare for event day."
-  },
-  {
-    number: "03",
-    title: "Teams collaborate during event day",
-    description:
-      "Students spend event day brainstorming, developing solutions, and building pitch presentation decks."
-  },
-  {
-    number: "04",
-    title: "Live presentations & professional feedback",
-    description:
-      "Teams pitch their solutions to a panel of judges and organization representatives, receiving direct feedback and category recognition."
-  }
-] as const;
-
-const founders = [
-  {
-    name: "Avighna Khare",
-    school: "Incoming NCSSM student • Previously attended William Amos Hough High School",
-    bio: "Avighna helped start SolveSprint™ after seeing how difficult it can be for students to find projects connected to real people and real problems. He wanted students to leave a challenge with something finished, useful, and worth showing.",
-    portrait: "/images/about/avighna-khare.png",
-    alt: "Portrait of SolveSprint™ cofounder Avighna Khare"
-  },
-  {
-    name: "Kavish Shah",
-    school: "Incoming NCSSM student • Olympic High School",
-    bio: "Kavish is part of the founding team building the experience around how students discover challenges, work with teammates, and move from an early idea to a complete in-person presentation.",
-    portrait: "/images/about/kavish-shah.png",
-    alt: "Portrait of SolveSprint™ cofounder Kavish Shah"
-  }
-] as const;
-
 export default function AboutPage() {
+  const founders = [
+    {
+      name: CONTACT_CONFIG.avighna.name,
+      role: CONTACT_CONFIG.avighna.role,
+      title: CONTACT_CONFIG.avighna.title,
+      bio: "Focuses on software architecture, website infrastructure, and participant outreach strategy for SolveSprint.",
+      imageSrc: APPROVED_IMAGES["founder-avighna"].src,
+    },
+    {
+      name: CONTACT_CONFIG.kavish.name,
+      role: CONTACT_CONFIG.kavish.role,
+      title: CONTACT_CONFIG.kavish.title,
+      bio: "Leads organization partnerships and local community outreach to bring real challenge briefs to students.",
+      imageSrc: APPROVED_IMAGES["founder-kavish"].src,
+    },
+  ];
+
   return (
-    <div className="bg-[#FFF9F0] min-h-screen text-slate-900">
-      {/* 1. Hero */}
-      <section className="relative border-b border-slate-900/10 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">ABOUT SOLVESPRINT™</span>
-            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
-              We wanted student work to feel real.
-            </h1>
-            <p className="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed">
-              Students are constantly told to build experience, but finding a real problem, a committed team, and someone willing to take the work seriously is much harder. SolveSprint™ started because we wanted that process to be clearer and anchored in real, in-person collaboration.
-            </p>
-            <p className="mt-4 text-base lg:text-lg text-slate-600 leading-relaxed">
-              Local businesses and community organizations bring focused challenges. High school student teams choose a prompt, build a solution during event day, and pitch live to earn direct feedback and recognition from industry professionals.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link href="/get-involved" className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-orange-600 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-orange-700 shadow-sm">
-                Get Involved
-              </Link>
-              <Link href="/how-it-works" className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-slate-900/15 bg-white px-6 py-3 text-[15px] font-semibold text-slate-900 transition-all hover:bg-slate-50 shadow-sm">
-                See how it works
-              </Link>
-            </div>
-          </div>
+    <div className="w-full space-y-20 sm:space-y-28 py-12">
+      {/* ── HERO & WHY WE STARTED ── */}
+      <section className="site-container relative pt-12 sm:pt-16">
+        <TopoPattern opacity={0.05} />
+        <div className="max-w-3xl space-y-6">
+          <p className="trail-label text-tangerine font-bold">ABOUT SOLVESPRINT</p>
+          <h1 className="display-hero text-ink">
+            Why we started.
+          </h1>
+          <p className="body-large text-ink-muted">
+            SolveSprint was started by high school students who wanted to create an honest, in-person space where students can tackle real community problems together.
+          </p>
         </div>
       </section>
 
-      {/* 2. Why SolveSprint Exists */}
-      <section className="py-20 lg:py-28 border-b border-slate-900/10 bg-[#FFFDF9]">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
-            <div className="lg:col-span-5">
-              <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">WHY WE STARTED</span>
-              <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-                Bridging classroom learning & real-world problems.
-              </h2>
-            </div>
-            <div className="lg:col-span-7 space-y-6 text-base lg:text-lg text-slate-600 leading-relaxed">
-              <p>
-                A lot of student projects end when the class or competition finishes. Even when the work is good, students do not always have a real audience, useful professional feedback, or a finished result they can carry forward.
+      {/* ── WHAT WE ARE BUILDING ── */}
+      <section className="site-container">
+        <div className="rounded-[28px] border-2 border-ink bg-[#E2F1F5] p-8 sm:p-12 space-y-6 shadow-[6px_6px_0px_0px_#233047]">
+          <span className="inline-block px-3 py-1 rounded-[8px] border-2 border-ink bg-white font-mono text-xs font-bold text-ink uppercase tracking-wider shadow-[2px_2px_0px_0px_#233047]">
+            EVENT CONCEPT
+          </span>
+          <h2 className="display-section text-ink">What we are building</h2>
+          <p className="body-large text-ink max-w-3xl leading-relaxed font-medium">
+            We are designing a 1-day, in-person challenge event. Local organizations bring real, unvarnished questions. High school teams collaborate, prototype solutions, and present what they built to community representatives.
+          </p>
+        </div>
+      </section>
+
+      {/* ── TWO FOUNDER PROFILES ── */}
+      <section className="site-container space-y-12">
+        <SectionIntro
+          label="CO-FOUNDERS"
+          heading="The team behind SolveSprint"
+          supporting="Students working on event structure, organization partnerships, and platform setup."
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-8 lg:gap-12">
+          {founders.map((f) => (
+            <FounderProfile key={f.name} founder={f} />
+          ))}
+        </div>
+      </section>
+
+      {/* ── HONEST EVENT STATUS ── */}
+      <section className="site-container">
+        <EventStatus />
+      </section>
+
+      {/* ── CONTACT INFORMATION ── */}
+      <section className="site-container max-w-2xl space-y-6 border-t-2 border-ink pt-12">
+        <h2 className="heading-support text-ink">Contact SolveSprint</h2>
+        <p className="body-standard text-ink-muted">
+          Have a question about event planning, organization brief submission, or volunteering? Reach out directly.
+        </p>
+
+        <div className="space-y-3 body-standard text-ink font-medium">
+          {CONTACT_CONFIG.avighna.email && (
+            <p>
+              <strong className="text-tangerine">{CONTACT_CONFIG.avighna.name}:</strong>{" "}
+              <a href={`mailto:${CONTACT_CONFIG.avighna.email}`} className="underline hover:text-tangerine">
+                {CONTACT_CONFIG.avighna.email}
+              </a>
+            </p>
+          )}
+          {CONTACT_CONFIG.kavish.email && (
+            <p>
+              <strong className="text-tangerine">{CONTACT_CONFIG.kavish.name}:</strong>{" "}
+              <a href={`mailto:${CONTACT_CONFIG.kavish.email}`} className="underline hover:text-tangerine">
+                {CONTACT_CONFIG.kavish.email}
+              </a>
+            </p>
+          )}
+          {CONTACT_CONFIG.generalEmail && (
+            <p>
+              <strong className="text-tangerine">General Inquiry:</strong>{" "}
+              <a href={`mailto:${CONTACT_CONFIG.generalEmail}`} className="underline hover:text-tangerine">
+                {CONTACT_CONFIG.generalEmail}
+              </a>
+            </p>
+          )}
+          {!CONTACT_CONFIG.avighna.email && !CONTACT_CONFIG.kavish.email && !CONTACT_CONFIG.generalEmail && (
+            <div className="rounded-[14px] bg-paper-light border-2 border-ink p-4 space-y-2 shadow-[2px_2px_0px_0px_#233047]">
+              <p className="text-ink">
+                Direct email addresses are configured during event launch. To submit an inquiry or get involved, please visit our participation hub.
               </p>
-              <p>
-                At the same time, companies, startups, and community groups have operational questions that students are excited to explore. The hard part is turning those questions into structured briefs that are focused enough for high school teams to tackle.
-              </p>
-              <p>
-                SolveSprint brings both sides together in an in-person event format. The goal is simple: give students serious experience they can present with confidence, and give host organizations structured ideas from young people.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. The Competition Model */}
-      <section className="py-20 lg:py-28 border-b border-slate-900/10">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">THE EVENT MODEL</span>
-            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
-              One clear sequence from brief to presentation.
-            </h2>
-          </div>
-
-          <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {processSteps.map((step) => (
-              <div key={step.number} className="border-l-2 border-orange-500 pl-6">
-                <span className="text-sm font-mono font-bold text-orange-600">{step.number}</span>
-                <h3 className="mt-2 text-xl font-bold text-slate-900">{step.title}</h3>
-                <p className="mt-3 text-base text-slate-600 leading-relaxed">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Founding Team Profiles */}
-      <section className="py-20 lg:py-28 border-b border-slate-900/10 bg-[#FFFDF9]" id="contact">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">FOUNDING TEAM</span>
-            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
-              Built by students for the work students want to do.
-            </h2>
-            <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-              SolveSprint was started by North Carolina students who wanted a better way to move from an idea to a real, finished project.
-            </p>
-          </div>
-
-          <div className="mt-14 grid gap-10 sm:grid-cols-2 max-w-4xl">
-            {founders.map((founder) => (
-              <div key={founder.name} className="flex flex-col items-start">
-                <div className="relative h-72 w-full overflow-hidden rounded-2xl bg-slate-200 border border-slate-900/10 shadow-sm">
-                  <Image
-                    src={founder.portrait}
-                    alt={founder.alt}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 33vw"
-                    className="object-cover"
-                  />
-                </div>
-                <h3 className="mt-5 text-xl font-bold text-slate-900">{founder.name}</h3>
-                <p className="mt-1 text-sm font-semibold text-orange-600">{founder.school}</p>
-                <p className="mt-3 text-base text-slate-600 leading-relaxed">{founder.bio}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Stage of Development & Next Steps */}
-      <section className="py-20 lg:py-28 bg-[#101828] text-white">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-400">DEVELOPMENT STAGE</span>
-            <h2 className="mt-3 text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-              Building a trusted local competition model.
-            </h2>
-            <p className="mt-6 text-lg sm:text-xl text-slate-300 leading-relaxed">
-              SolveSprint is currently preparing our upcoming in-person student innovation events. The goal is to establish a dependable local competition where completed student work, constructive evaluation, and real presentation experience give high school students a strong foundation for future academic and career goals.
-            </p>
-
-            <div className="mt-10">
-              <Link href="/get-involved" className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-orange-600 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-orange-700 shadow-sm">
-                Register Your Interest →
+              <Link href="/get-involved" className="inline-flex items-center gap-2 font-bold text-tangerine hover:underline">
+                <span>Go to Get Involved Hub</span>
+                <span aria-hidden="true">→</span>
               </Link>
             </div>
-          </div>
+          )}
         </div>
+
+        <p className="trail-label text-ink-muted pt-2">
+          {CONTACT_CONFIG.privacyNotice}
+        </p>
       </section>
     </div>
   );

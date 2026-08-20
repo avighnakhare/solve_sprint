@@ -1,44 +1,39 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const LOGO_SRC = "/brand/solvesprint-mark.png";
 
-export function SiteMark({
-  className,
-  priority = false
-}: {
-  className?: string;
-  priority?: boolean;
-}) {
+export function SiteMark({ className = "", priority = false }: { className?: string; priority?: boolean }) {
   return (
     <Image
       src={LOGO_SRC}
-      alt=""
-      width={64}
-      height={64}
+      alt="SolveSprint Logo Mark"
+      width={36}
+      height={36}
       priority={priority}
-      className={["site-brand__mark", className].filter(Boolean).join(" ")}
+      className={`w-full h-full object-contain ${className}`}
     />
   );
 }
 
 export function SiteBrand({
-  className,
-  copyClassName,
+  className = "",
   descriptor,
-  priority = false
+  copyClassName,
 }: {
   className?: string;
-  copyClassName?: string;
   descriptor?: string;
-  priority?: boolean;
+  copyClassName?: string;
 }) {
   return (
-    <span className={["site-brand", className].filter(Boolean).join(" ")}>
-      <SiteMark priority={priority} />
-      <span className={["site-brand__copy", copyClassName].filter(Boolean).join(" ")}>
-        <strong>SolveSprint™</strong>
-        {descriptor ? <small>{descriptor}</small> : null}
+    <Link href="/" className={`inline-flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-tangerine rounded-md p-1 ${className}`}>
+      <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
+        <SiteMark priority />
+      </div>
+      <span className={`font-display font-bold text-xl sm:text-22px tracking-tight text-ink group-hover:text-tangerine transition-colors ${copyClassName || ""}`}>
+        SolveSprint™
+        {descriptor && <span className="block text-xs font-mono text-ink-muted">{descriptor}</span>}
       </span>
-    </span>
+    </Link>
   );
 }

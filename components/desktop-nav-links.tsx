@@ -3,40 +3,43 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export type PublicNavLink = {
-  href: string;
-  label: string;
-};
+export const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/events", label: "Events" },
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/student", label: "For students" },
+  { href: "/organization", label: "For organizations" },
+  { href: "/volunteer", label: "Volunteer" },
+  { href: "/about", label: "About" },
+];
 
-export function isCurrentRoute(pathname: string, href: string) {
-  return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
-}
-
-export function DesktopNavLinks({ links }: { links: PublicNavLink[] }) {
+export function DesktopNavLinks() {
   const pathname = usePathname();
 
   return (
-    <div className="hidden lg:flex items-center gap-7 xl:gap-9">
-      {links.map((link) => {
-        const current = isCurrentRoute(pathname, link.href);
+    <nav className="hidden md:flex items-center gap-6 lg:gap-8" aria-label="Main Navigation">
+      {NAV_LINKS.map(({ href, label }) => {
+        const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+
         return (
           <Link
-            key={link.href}
-            href={link.href}
-            aria-current={current ? "page" : undefined}
-            className={`text-[15px] font-medium transition-colors relative py-1 ${
-              current
-                ? "text-slate-900 font-semibold"
-                : "text-slate-600 hover:text-slate-900"
+            key={href}
+            href={href}
+            className={`relative py-1 font-body font-medium text-15px text-ink transition-colors hover:text-tangerine focus:outline-none focus-visible:ring-2 focus-visible:ring-tangerine rounded-sm ${
+              isActive ? "font-bold text-ink" : "text-ink-muted"
             }`}
+            aria-current={isActive ? "page" : undefined}
           >
-            {link.label}
-            {current && (
-              <span className="absolute inset-x-0 -bottom-2 h-0.5 rounded-full bg-orange-600" />
+            {label}
+            {isActive && (
+              <span
+                className="absolute left-1/2 -bottom-1 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-tangerine"
+                aria-hidden="true"
+              />
             )}
           </Link>
         );
       })}
-    </div>
+    </nav>
   );
 }

@@ -1,115 +1,139 @@
 import Link from "next/link";
-import { SiteBrand } from "@/components/site-brand";
-import { CONTACT_CONFIG } from "@/lib/site-config";
-
-const footerGroups = [
-  {
-    title: "Explore",
-    titleHref: undefined as string | undefined,
-    links: [
-      { href: "/", label: "Home" },
-      { href: "/how-it-works", label: "How It Works" },
-      { href: "/about", label: "About SolveSprint" }
-    ]
-  },
-  {
-    title: "Participate",
-    titleHref: "/get-involved",
-    links: [
-      { href: "/student", label: "For Students" },
-      { href: "/organization", label: "For Organizations" },
-      { href: "/volunteer", label: "Volunteers & Coordinators" },
-      { href: "/get-involved", label: "Get Involved Hub" }
-    ]
-  },
-  {
-    title: "Legal & Safety",
-    titleHref: "/legal",
-    links: [
-      { href: "/terms", label: "Terms" },
-      { href: "/privacy", label: "Privacy Policy" },
-      { href: "/rules", label: "Event Rules" },
-      { href: "/cookie-policy", label: "Cookie Notice" },
-      { href: "/code-of-conduct", label: "Code of Conduct" },
-      { href: "/accessibility", label: "Accessibility" },
-      { href: "/security-reporting", label: "Security Reporting" }
-    ]
-  }
-];
+import { SiteBrand } from "./site-brand";
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer className="site-footer border-t border-orange/20 bg-mist">
-      <div className="site-footer__inner mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-12">
-          {/* Brand and Description */}
-          <div className="lg:col-span-4">
-            <Link href="/" aria-label="SolveSprint™ home" className="inline-block">
-              <SiteBrand descriptor="In-person student innovation event" />
-            </Link>
-            <p className="mt-4 text-sm leading-relaxed text-muted">
-              SolveSprint brings local businesses, community organizations, and high school student teams together for an intensive in-person problem-solving competition.
+    <footer className="w-full bg-paper-light border-t border-line text-ink pt-16 pb-12">
+      <div className="site-container space-y-12">
+        {/* Top Footer Row */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12">
+          {/* Col 1: Brand & Purpose */}
+          <div className="md:col-span-1 space-y-4">
+            <SiteBrand />
+            <p className="body-standard text-ink-muted text-sm leading-relaxed">
+              SolveSprint is a student-led, in-person innovation challenge for high school teams. Local organizations bring real problems; students build and present solutions.
             </p>
-            {/* Founders & Contact Info */}
-            <div className="mt-6 border-t border-line/60 pt-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-ink/70">Co-Founders & Event Leads</p>
-              <div className="mt-2 space-y-1 text-sm text-ink/90">
-                <p>
-                  <strong className="font-medium text-ink">{CONTACT_CONFIG.avighna.name}</strong> · {CONTACT_CONFIG.avighna.title}
-                  {CONTACT_CONFIG.avighna.email ? (
-                    <a href={`mailto:${CONTACT_CONFIG.avighna.email}`} className="ml-2 text-accent underline hover:text-accent-hover">
-                      {CONTACT_CONFIG.avighna.email}
-                    </a>
-                  ) : null}
-                </p>
-                <p>
-                  <strong className="font-medium text-ink">{CONTACT_CONFIG.kavish.name}</strong> · {CONTACT_CONFIG.kavish.title}
-                  {CONTACT_CONFIG.kavish.email ? (
-                    <a href={`mailto:${CONTACT_CONFIG.kavish.email}`} className="ml-2 text-accent underline hover:text-accent-hover">
-                      {CONTACT_CONFIG.kavish.email}
-                    </a>
-                  ) : null}
-                </p>
-              </div>
-            </div>
           </div>
 
-          {/* Navigation Columns */}
-          <nav className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-8" aria-label="Footer navigation">
-            {footerGroups.map((group) => {
-              const headingId = `footer-${group.title.toLowerCase().replace(/[^a-z0-9]/g, "-")}`;
-              return (
-                <section key={group.title} aria-labelledby={headingId}>
-                  <h2 id={headingId} className="text-xs font-semibold uppercase tracking-wider text-ink/80">
-                    {group.titleHref ? (
-                      <Link href={group.titleHref} className="hover:text-accent">
-                        {group.title}
-                      </Link>
-                    ) : (
-                      group.title
-                    )}
-                  </h2>
-                  <ul className="mt-4 space-y-2.5 text-sm text-muted">
-                    {group.links.map((link) => (
-                      <li key={link.href}>
-                        <Link href={link.href} className="transition-colors hover:text-ink">
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              );
-            })}
-          </nav>
+          {/* Col 2: Navigation */}
+          <div className="space-y-3">
+            <p className="trail-label text-tangerine font-bold">
+              NAVIGATION
+            </p>
+            <ul className="space-y-2 text-sm font-body font-medium">
+              <li>
+                <Link href="/" className="hover:text-tangerine transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/how-it-works" className="hover:text-tangerine transition-colors">
+                  How it works
+                </Link>
+              </li>
+              <li>
+                <Link href="/student" className="hover:text-tangerine transition-colors">
+                  For students
+                </Link>
+              </li>
+              <li>
+                <Link href="/organization" className="hover:text-tangerine transition-colors">
+                  For organizations
+                </Link>
+              </li>
+              <li>
+                <Link href="/volunteer" className="hover:text-tangerine transition-colors">
+                  Volunteer
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-tangerine transition-colors">
+                  About SolveSprint
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 3: Get Involved */}
+          <div className="space-y-3">
+            <p className="trail-label text-tangerine font-bold">
+              GET INVOLVED
+            </p>
+            <ul className="space-y-2 text-sm font-body font-medium">
+              <li>
+                <Link href="/get-involved" className="hover:text-tangerine transition-colors">
+                  Interest List &amp; Applications
+                </Link>
+              </li>
+              <li>
+                <Link href="/student" className="hover:text-tangerine transition-colors">
+                  Student Teams
+                </Link>
+              </li>
+              <li>
+                <Link href="/organization" className="hover:text-tangerine transition-colors">
+                  Challenge Proposals
+                </Link>
+              </li>
+              <li>
+                <Link href="/volunteer" className="hover:text-tangerine transition-colors">
+                  Mentor &amp; Volunteer Roles
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 4: Legal & Policies */}
+          <div className="space-y-3">
+            <p className="trail-label text-tangerine font-bold">
+              LEGAL &amp; SAFETY
+            </p>
+            <ul className="space-y-2 text-sm font-body font-medium">
+              <li>
+                <Link href="/legal" className="hover:text-tangerine transition-colors">
+                  Legal &amp; Safety Overview
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-tangerine transition-colors">
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-tangerine transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/code-of-conduct" className="hover:text-tangerine transition-colors">
+                  Code of Conduct
+                </Link>
+              </li>
+              <li>
+                <Link href="/rules" className="hover:text-tangerine transition-colors">
+                  Official Event Rules
+                </Link>
+              </li>
+              <li>
+                <Link href="/accessibility" className="hover:text-tangerine transition-colors">
+                  Accessibility Commitment
+                </Link>
+              </li>
+              <li>
+                <Link href="/security-reporting" className="hover:text-tangerine transition-colors">
+                  Security Disclosure
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-line pt-6 text-xs text-muted sm:flex-row">
-          <span>IN-PERSON COMPETITION · REAL PROBLEMS · HIGH SCHOOL TEAMS</span>
-          <span>© {currentYear} SolveSprint™. All rights reserved.</span>
+        {/* Bottom Legal Disclaimer & Copyright */}
+        <div className="border-t border-line pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-muted font-body">
+          <p>© {new Date().getFullYear()} SolveSprint™. All rights reserved.</p>
+          <p className="text-center sm:text-right max-w-md">
+            SolveSprint is a student-led initiative. Stock photography is used under license for illustrative purposes only.
+          </p>
         </div>
       </div>
     </footer>

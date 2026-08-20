@@ -1,285 +1,229 @@
 import Link from "next/link";
-import Image from "next/image";
-import type { Metadata } from "next";
-import { FORM_CONFIGS, getFormLink } from "@/lib/site-config";
+import { TopoPattern } from "@/components/brand/TopoPattern";
+import { TrailMarker } from "@/components/brand/TrailMarker";
+import { FAQItem } from "@/components/editorial/FAQItem";
+import { PhotoFrame } from "@/components/editorial/PhotoFrame";
+import { SectionIntro } from "@/components/editorial/SectionIntro";
+import { APPROVED_IMAGES } from "@/components/media/approved-media";
+import { FORM_CONFIGS } from "@/lib/site-config";
 
-export const metadata: Metadata = {
-  title: "For High School Students | SolveSprint™ In-Person Event",
-  description:
-    "SolveSprint gives high school students the opportunity to tackle real organizational problems, collaborate in teams, and pitch to professional judges."
+export const metadata = {
+  title: "For Students | SolveSprint™",
+  description: "You bring the curiosity. We will give you a problem worth solving. Learn how high school students participate in SolveSprint events.",
 };
-
-const studentFaqs = [
-  {
-    question: "Do I need prior competition experience to participate?",
-    answer: "No. SolveSprint is designed for high school students of all experience levels who are eager to collaborate, think creatively, and learn how to present ideas effectively."
-  },
-  {
-    question: "Can I register by myself or do I need a complete team?",
-    answer: "You can register either as part of a pre-formed team of high school classmates or individually. Individual registrants will be given the opportunity to connect with teammates during pre-event prep."
-  },
-  {
-    question: "What should I bring on event day?",
-    answer: "Bring a notebook or tablet/laptop for drafting ideas, presentation slides, or research, along with a positive attitude and willingness to present your team's ideas."
-  },
-  {
-    question: "Does submitting the interest form guarantee a confirmed seat?",
-    answer: "Submitting the student interest form registers your interest for upcoming events. Venue capacity and challenge seat confirmations are finalized when official event registration opens."
-  },
-  {
-    question: "What do judges look for during presentations?",
-    answer: "Judges evaluate originality, practical feasibility, research evidence, clarity of explanation, and quality of pitch presentation based on explicit event rubrics."
-  }
-] as const;
 
 export default function ForStudentsPage() {
   const studentForm = FORM_CONFIGS.student;
-  const formLink = getFormLink("student");
+
+  const faqs = [
+    {
+      q: "Who can participate in SolveSprint?",
+      a: "SolveSprint is designed for high school students (ages 13 to 18). No previous competition, coding, or business experience is required.",
+    },
+    {
+      q: "What if I don't have a team yet?",
+      a: "You can sign up individually or with friends. If you don't have a team, we will pair you with other students on the morning of the event.",
+    },
+    {
+      q: "Does participation guarantee awards or scholarships?",
+      a: "No. SolveSprint focuses on real-world learning, teamwork, and constructive feedback from community leaders rather than guaranteed trophies or admissions claims.",
+    },
+    {
+      q: "How much does it cost?",
+      a: "SolveSprint events are completely free for student participants.",
+    },
+  ];
 
   return (
-    <div className="bg-[#FFF9F0] min-h-screen text-slate-900">
-      {/* 1. Image-led Editorial Hero */}
-      <section className="relative border-b border-slate-900/10 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-7">
-              <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">
-                FOR HIGH SCHOOL STUDENTS
+    <div className="w-full space-y-20 sm:space-y-28 py-12">
+      {/* ── HERO ── */}
+      <section className="site-container relative pt-12 sm:pt-16">
+        <TopoPattern opacity={0.05} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-7 space-y-6">
+            <p className="trail-label text-tangerine font-bold">FOR HIGH SCHOOL STUDENTS</p>
+            <h1 className="display-hero text-ink">
+              You bring the curiosity. We will give you a problem worth solving.
+            </h1>
+            <p className="body-large text-ink-muted">
+              SolveSprint is an in-person challenge day where you team up, tackle a real brief from a local organization, and present your ideas.
+            </p>
+
+            {/* Reassurance Callout */}
+            <div className="rounded-[20px] border-2 border-ink bg-[#E2F1F5] p-6 space-y-3 shadow-[4px_4px_0px_0px_#233047]">
+              <span className="inline-block px-2.5 py-1 rounded-[6px] border border-ink bg-white font-mono text-xs font-bold text-ink uppercase tracking-wider">
+                GOOD TO KNOW
               </span>
-              <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
-                Real Experience Before College
-              </h1>
-              <p className="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed max-w-2xl">
-                SolveSprint brings high school students together for an in-person problem-solving competition. Tackle real challenges provided by local organizations, build practical solutions, and pitch your ideas to professional judges.
-              </p>
-
-              <div className="mt-8">
-                {formLink.isAvailable ? (
-                  <a
-                    href={formLink.url!}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-orange-600 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-orange-700 shadow-sm"
-                  >
-                    {studentForm.buttonText} (Google Form) ↗
-                  </a>
-                ) : (
-                  <div className="inline-flex flex-col items-start gap-2">
-                    <button
-                      disabled
-                      className="cursor-not-allowed rounded-xl bg-slate-300 px-6 py-3 text-[15px] font-semibold text-slate-600"
-                    >
-                      Student Interest Form Coming Soon
-                    </button>
-                    <p className="text-sm text-slate-500">Form links will be enabled as soon as event date details are finalized.</p>
-                  </div>
-                )}
-              </div>
+              <ul className="space-y-2 body-standard text-ink font-medium">
+                <li className="flex items-start gap-2">
+                  <span className="text-tangerine font-bold">•</span>
+                  <span>No previous competition experience is required.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-tangerine font-bold">•</span>
+                  <span>Students may express interest before having a full team.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-tangerine font-bold">•</span>
+                  <span>Event-specific eligibility, team size, and deliverables will be posted with official event announcements.</span>
+                </li>
+              </ul>
             </div>
 
-            <div className="lg:col-span-5">
-              <div className="relative overflow-hidden rounded-2xl border border-slate-900/10 shadow-lg aspect-[4/3]">
-                <Image
-                  src="/images/home/students-building.png"
-                  alt="High school student team brainstorming and collaborating"
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 45vw"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. What You Will Actually Do */}
-      <section className="py-20 lg:py-28 border-b border-slate-900/10 bg-[#FFFDF9]">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">HANDS-ON INNOVATION</span>
-            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
-              What You Will Actually Do
-            </h2>
-            <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-              SolveSprint is hands-on team innovation—not online lectures or passive attendance.
-            </p>
-          </div>
-
-          <div className="mt-14 grid gap-8 md:grid-cols-3">
-            <div className="border-t-2 border-orange-500 pt-6">
-              <span className="text-sm font-mono font-bold text-orange-600">01</span>
-              <h3 className="mt-2 text-xl font-bold text-slate-900">Analyze a Real Prompt</h3>
-              <p className="mt-3 text-base text-slate-600 leading-relaxed">
-                Read through an authentic operational or strategic challenge supplied by a local business, startup, or nonprofit.
-              </p>
-            </div>
-            <div className="border-t-2 border-orange-500 pt-6">
-              <span className="text-sm font-mono font-bold text-orange-600">02</span>
-              <h3 className="mt-2 text-xl font-bold text-slate-900">Collaborate & Prototype</h3>
-              <p className="mt-3 text-base text-slate-600 leading-relaxed">
-                Brainstorm with your teammates, conduct targeted research, and build slide decks or visual prototypes.
-              </p>
-            </div>
-            <div className="border-t-2 border-orange-500 pt-6">
-              <span className="text-sm font-mono font-bold text-orange-600">03</span>
-              <h3 className="mt-2 text-xl font-bold text-slate-900">Pitch to Professional Judges</h3>
-              <p className="mt-3 text-base text-slate-600 leading-relaxed">
-                Present your team&apos;s recommendations live, answer judge questions, and receive constructive professional feedback.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Example Challenge Categories */}
-      <section className="py-20 lg:py-28 border-b border-slate-900/10">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">CHALLENGE FIELDS</span>
-            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
-              Example Challenge Categories
-            </h2>
-            <p className="mt-4 text-lg text-slate-600 leading-relaxed">
-              Challenges are structured across multiple disciplines so every student can contribute their strengths.
-            </p>
-          </div>
-
-          <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="border-l-2 border-slate-900/20 pl-6">
-              <h3 className="text-xl font-bold text-slate-900">Business & Strategy</h3>
-              <p className="mt-3 text-base text-slate-600 leading-relaxed">
-                Market analysis, business model design, product launch planning, and operational strategy.
-              </p>
-            </div>
-            <div className="border-l-2 border-slate-900/20 pl-6">
-              <h3 className="text-xl font-bold text-slate-900">Technology & Product</h3>
-              <p className="mt-3 text-base text-slate-600 leading-relaxed">
-                Software concepts, app mockups, AI integration ideas, and user experience design.
-              </p>
-            </div>
-            <div className="border-l-2 border-slate-900/20 pl-6">
-              <h3 className="text-xl font-bold text-slate-900">Marketing & Outreach</h3>
-              <p className="mt-3 text-base text-slate-600 leading-relaxed">
-                Brand campaigns, social media strategies, audience messaging, and community outreach.
-              </p>
-            </div>
-            <div className="border-l-2 border-slate-900/20 pl-6">
-              <h3 className="text-xl font-bold text-slate-900">Sustainability & Impact</h3>
-              <p className="mt-3 text-base text-slate-600 leading-relaxed">
-                Environmental sustainability initiatives, civic impact projects, and nonprofit growth ideas.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. What You Gain From Participating */}
-      <section className="py-20 lg:py-28 border-b border-slate-900/10 bg-[#FFFDF9]">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">STUDENT BENEFITS</span>
-            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
-              What You Gain From Participating
-            </h2>
-          </div>
-
-          <div className="mt-14 grid gap-10 sm:grid-cols-2">
-            <div className="flex items-start gap-4">
-              <span className="h-3 w-3 rounded-full bg-orange-500 mt-2 shrink-0" />
-              <div>
-                <h3 className="text-xl font-bold text-slate-900">Real Project Portfolio Material</h3>
-                <p className="mt-2 text-base text-slate-600 leading-relaxed">
-                  Walk away with a documented, practical solution you can discuss in college applications or interviews.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <span className="h-3 w-3 rounded-full bg-orange-500 mt-2 shrink-0" />
-              <div>
-                <h3 className="text-xl font-bold text-slate-900">Direct Professional Feedback</h3>
-                <p className="mt-2 text-base text-slate-600 leading-relaxed">
-                  Hear real insight from industry professionals, local business leaders, and judges who review your work.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <span className="h-3 w-3 rounded-full bg-orange-500 mt-2 shrink-0" />
-              <div>
-                <h3 className="text-xl font-bold text-slate-900">Team Collaboration Skills</h3>
-                <p className="mt-2 text-base text-slate-600 leading-relaxed">
-                  Gain hands-on experience delegating responsibilities, working under event deadlines, and refining pitch decks.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <span className="h-3 w-3 rounded-full bg-orange-500 mt-2 shrink-0" />
-              <div>
-                <h3 className="text-xl font-bold text-slate-900">Certificates & Recognition</h3>
-                <p className="mt-2 text-base text-slate-600 leading-relaxed">
-                  Receive official event participation certificates and category awards for outstanding work.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. FAQ */}
-      <section className="py-20 lg:py-28 border-b border-slate-900/10">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">QUESTIONS & ANSWERS</span>
-            <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
-              Frequently Asked Questions
-            </h2>
-          </div>
-
-          <div className="mt-14 divide-y divide-slate-900/15 max-w-4xl">
-            {studentFaqs.map((faq) => (
-              <div key={faq.question} className="py-8 first:pt-0 last:pb-0">
-                <h3 className="text-xl font-bold text-slate-900">{faq.question}</h3>
-                <p className="mt-3 text-base lg:text-lg text-slate-600 leading-relaxed">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Form CTA */}
-      <section className="py-20 lg:py-28 bg-[#101828] text-white">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-400">READY TO JOIN?</span>
-            <h2 className="mt-3 text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-              Student Interest Registration
-            </h2>
-            <p className="mt-6 text-lg sm:text-xl text-slate-300 leading-relaxed">
-              Submit your interest to receive announcements when event dates, challenge briefs, and team registration open.
-            </p>
-
-            <div className="mt-10">
-              {formLink.isAvailable ? (
+            <div className="pt-2">
+              {studentForm.url ? (
                 <a
-                  href={formLink.url!}
+                  href={studentForm.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-orange-600 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-orange-700 shadow-sm"
+                  className="inline-flex items-center justify-center min-h-[58px] min-w-[156px] rounded-[14px] border-2 border-ink bg-tangerine px-8 py-3.5 font-body font-bold text-[17px] leading-[1.1] text-ink shadow-[3px_3px_0px_0px_#233047] hover:-translate-y-0.5 hover:bg-sun hover:shadow-[5px_5px_0px_0px_#233047] active:translate-y-0.5 transition-all w-full sm:w-auto"
                 >
-                  {studentForm.buttonText} (Google Form) ↗
+                  {studentForm.buttonText}
                 </a>
               ) : (
-                <div className="inline-flex flex-col items-start gap-2">
-                  <button
-                    disabled
-                    className="cursor-not-allowed rounded-xl bg-slate-700 px-6 py-3 text-[15px] font-semibold text-slate-400"
-                  >
-                    Student Interest Form Coming Soon
-                  </button>
-                  <p className="text-sm text-slate-400">{studentForm.privacyNote}</p>
-                </div>
+                <Link
+                  href="/get-involved"
+                  className="inline-flex items-center justify-center min-h-[58px] min-w-[156px] rounded-[14px] border-2 border-ink bg-tangerine px-8 py-3.5 font-body font-bold text-[17px] leading-[1.1] text-ink shadow-[3px_3px_0px_0px_#233047] hover:-translate-y-0.5 hover:bg-sun hover:shadow-[5px_5px_0px_0px_#233047] active:translate-y-0.5 transition-all w-full sm:w-auto"
+                >
+                  Join the student interest list
+                </Link>
               )}
             </div>
+          </div>
+
+          <div className="lg:col-span-5">
+            <PhotoFrame
+              image={APPROVED_IMAGES["students-collaborating"]}
+              aspect="portrait"
+              priority
+              caption
+              captionText="STUDENT TEAM COLLABORATION"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHAT PARTICIPATION FEELS LIKE ── */}
+      <section className="site-container space-y-12">
+        <SectionIntro
+          label="THE EXPERIENCE"
+          heading="What participation feels like"
+          supporting="An environment built for focus, collaboration, and practical problem solving."
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="rounded-[20px] bg-white border-2 border-ink p-8 space-y-4 shadow-[4px_4px_0px_0px_#F47731] hover:-translate-y-1 transition-all">
+            <TrailMarker number="01" size="sm" />
+            <h3 className="heading-support text-ink">Collaborative, not intense</h3>
+            <p className="body-standard text-ink-muted">
+              You will work alongside other curious students and helpful mentors in an encouraging, open space.
+            </p>
+          </div>
+          <div className="rounded-[20px] bg-white border-2 border-ink p-8 space-y-4 shadow-[4px_4px_0px_0px_#233047] hover:-translate-y-1 transition-all">
+            <TrailMarker number="02" size="sm" />
+            <h3 className="heading-support text-ink">Real-world context</h3>
+            <p className="body-standard text-ink-muted">
+              Problems come from actual organizations in your community, not abstract textbook scenarios.
+            </p>
+          </div>
+          <div className="rounded-[20px] bg-white border-2 border-ink p-8 space-y-4 shadow-[4px_4px_0px_0px_#78A86B] hover:-translate-y-1 transition-all">
+            <TrailMarker number="03" size="sm" />
+            <h3 className="heading-support text-ink">Direct, helpful feedback</h3>
+            <p className="body-standard text-ink-muted">
+              Present your idea to adult leaders and hear genuine observations on how your team performed.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHAT TO BRING VS WHAT YOU DO NOT NEED ── */}
+      <section className="site-container">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* What to bring */}
+          <div className="rounded-[28px] border-2 border-ink bg-[#FFF6DB] p-8 sm:p-10 space-y-4 shadow-[5px_5px_0px_0px_#F47731]">
+            <span className="inline-block px-3 py-1 rounded-[8px] border-2 border-ink bg-white font-mono text-xs font-bold text-ink uppercase tracking-wider shadow-[2px_2px_0px_0px_#233047]">
+              PREPARATION CHECKLIST
+            </span>
+            <h2 className="heading-support text-ink">What to bring</h2>
+            <ul className="space-y-3 body-standard text-ink font-medium">
+              <li className="flex items-start gap-2">
+                <span className="text-ink font-bold">•</span>
+                <span>Curiosity and a willingness to work with a team</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-ink font-bold">•</span>
+                <span>A laptop or tablet if you have one (optional)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-ink font-bold">•</span>
+                <span>Signed student participant agreement / guardian consent if under 18</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* What you do NOT need */}
+          <div className="rounded-[28px] border-2 border-ink bg-[#FDECE2] p-8 sm:p-10 space-y-4 shadow-[5px_5px_0px_0px_#233047]">
+            <span className="inline-block px-3 py-1 rounded-[8px] border-2 border-ink bg-white font-mono text-xs font-bold text-ink uppercase tracking-wider shadow-[2px_2px_0px_0px_#233047]">
+              REASSURANCE
+            </span>
+            <h2 className="heading-support text-ink">What you do NOT need</h2>
+            <ul className="space-y-3 body-standard text-ink font-medium">
+              <li className="flex items-start gap-2">
+                <span className="text-ink font-bold">•</span>
+                <span>A pre-made business pitch or coding experience</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-ink font-bold">•</span>
+                <span>A fully pre-formed team of four friends</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-ink font-bold">•</span>
+                <span>Formal attire or expensive technology</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ── STUDENT FAQ ── */}
+      <section className="site-container max-w-3xl space-y-8">
+        <SectionIntro
+          label="STUDENT FAQ"
+          heading="Questions students ask"
+        />
+
+        <div className="border-t-2 border-ink">
+          {faqs.map((faq) => (
+            <FAQItem key={faq.q} question={faq.q} answer={faq.a} />
+          ))}
+        </div>
+      </section>
+
+      {/* ── INTEREST FORM CTA ── */}
+      <section className="site-container">
+        <div className="rounded-[28px] border-2 border-ink bg-ink text-paper p-10 sm:p-16 text-center space-y-6 shadow-[8px_8px_0px_0px_#F47731]">
+          <h2 className="display-section text-paper">Want to join a future SolveSprint?</h2>
+          <p className="body-large text-paper-light/90 max-w-xl mx-auto">
+            {studentForm.description}
+          </p>
+          <div>
+            {studentForm.url ? (
+              <a
+                href={studentForm.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center min-h-[58px] min-w-[156px] rounded-[14px] border-2 border-ink bg-sun px-8 py-3.5 font-body font-bold text-[17px] leading-[1.1] text-ink shadow-[3px_3px_0px_0px_#233047] hover:-translate-y-0.5 hover:bg-tangerine hover:shadow-[5px_5px_0px_0px_#233047] active:translate-y-0.5 transition-all w-full sm:w-auto"
+              >
+                {studentForm.buttonText}
+              </a>
+            ) : (
+              <Link
+                href="/get-involved"
+                className="inline-flex items-center justify-center min-h-[58px] min-w-[156px] rounded-[14px] border-2 border-ink bg-sun px-8 py-3.5 font-body font-bold text-[17px] leading-[1.1] text-ink shadow-[3px_3px_0px_0px_#233047] hover:-translate-y-0.5 hover:bg-tangerine hover:shadow-[5px_5px_0px_0px_#233047] active:translate-y-0.5 transition-all w-full sm:w-auto"
+              >
+                Join the student interest list
+              </Link>
+            )}
           </div>
         </div>
       </section>

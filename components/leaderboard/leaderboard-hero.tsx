@@ -1,11 +1,10 @@
 import Image from "next/image";
+import { APPROVED_IMAGES } from "@/components/home/HomeMedia";
 
 const leaderboardHeroImage = {
-  expectedPath: "/images/leaderboard/recognition-hero.webp",
-  // Replace this fallback when the dedicated recognition photograph is supplied.
-  src: "/images/home/submission-review.webp",
-  alt: "Reviewers assessing student work during a presentation",
-  focalPoint: "50% 48%"
+  src: APPROVED_IMAGES.livePresentation.src,
+  alt: APPROVED_IMAGES.livePresentation.alt,
+  focalPoint: APPROVED_IMAGES.livePresentation.objectPosition
 };
 
 export function LeaderboardHero() {

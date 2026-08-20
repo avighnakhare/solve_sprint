@@ -1,10 +1,10 @@
 import Image from "next/image";
+import { APPROVED_IMAGES } from "@/components/home/HomeMedia";
 
 const directoryImage = {
-  expectedPath: "/images/challenges/directory-hero.webp",
-  fallbackSrc: "/images/home/students-building.webp",
-  alt: "Students reviewing a project brief together around a laptop",
-  focalPoint: "50% 46%"
+  src: APPROVED_IMAGES.studentsCollaborating.src,
+  alt: APPROVED_IMAGES.studentsCollaborating.alt,
+  focalPoint: APPROVED_IMAGES.studentsCollaborating.objectPosition
 } as const;
 
 export function ChallengeDirectoryHero() {
@@ -27,10 +27,10 @@ export function ChallengeDirectoryHero() {
         <figure className="challenge-directory-hero__figure">
           <div className="challenge-directory-hero__image">
             <Image
-              src={directoryImage.fallbackSrc}
+              src={directoryImage.src}
               alt={directoryImage.alt}
-              width={1800}
-              height={1200}
+              width={1280}
+              height={853}
               sizes="(max-width: 767px) calc(100vw - 2rem), (max-width: 1199px) 40vw, 460px"
               style={{ objectPosition: directoryImage.focalPoint }}
             />

@@ -1,170 +1,105 @@
-import Link from "next/link";
-import type { Metadata } from "next";
-import { CONTACT_CONFIG, FORM_CONFIGS, getFormLink } from "@/lib/site-config";
+import { TopoPattern } from "@/components/brand/TopoPattern";
+import { SectionIntro } from "@/components/editorial/SectionIntro";
+import { FORM_CONFIGS, FormRole } from "@/lib/site-config";
 
-export const metadata: Metadata = {
-  title: "Get Involved | SolveSprint™ In-Person Event Registration",
-  description:
-    "Register interest for upcoming SolveSprint in-person student innovation events as a high school student team, host organization, volunteer, or event coordinator."
+export const metadata = {
+  title: "Get Involved | SolveSprint™",
+  description: "Choose how you want to be involved in SolveSprint student innovation events as a student, volunteer, organization partner, or coordinator.",
 };
 
 export default function GetInvolvedPage() {
-  const studentForm = FORM_CONFIGS.student;
-  const studentLink = getFormLink("student");
-
-  const orgForm = FORM_CONFIGS.organization;
-  const orgLink = getFormLink("organization");
-
-  const volunteerForm = FORM_CONFIGS.volunteer;
-  const volunteerLink = getFormLink("volunteer");
-
-  const coordinatorForm = FORM_CONFIGS.coordinator;
-  const coordinatorLink = getFormLink("coordinator");
-
-  const pathways = [
-    {
-      number: "01",
-      title: "High School Student",
-      role: "For students & team members",
-      form: studentForm,
-      link: studentLink,
-      guideHref: "/student",
-      guideLabel: "Read student guide"
-    },
-    {
-      number: "02",
-      title: "Host Organization",
-      role: "For businesses & nonprofits",
-      form: orgForm,
-      link: orgLink,
-      guideHref: "/organization",
-      guideLabel: "Read organization guide"
-    },
-    {
-      number: "03",
-      title: "Event Volunteer",
-      role: "For community members & adults",
-      form: volunteerForm,
-      link: volunteerLink,
-      guideHref: "/volunteer#volunteers",
-      guideLabel: "Read volunteer roles"
-    },
-    {
-      number: "04",
-      title: "Event Coordinator",
-      role: "For student leads & project coordinators",
-      form: coordinatorForm,
-      link: coordinatorLink,
-      guideHref: "/volunteer#coordinators",
-      guideLabel: "Read coordinator pathway"
-    }
-  ] as const;
+  // Ordered as requested: 1st Student, 2nd Volunteer, then Organization & Coordinator at the bottom
+  const roles: FormRole[] = ["student", "volunteer", "organization", "coordinator"];
 
   return (
-    <div className="bg-[#FFF9F0] min-h-screen text-slate-900">
-      {/* 1. Hero */}
-      <section className="relative border-b border-slate-900/10 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">
-              REGISTRATION & PARTICIPATION HUB
-            </span>
-            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
-              Get Involved with SolveSprint
-            </h1>
-            <p className="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed">
-              SolveSprint brings local businesses, community organizations, and high school student teams together for in-person innovation competitions. Select your pathway below to submit your interest.
-            </p>
-          </div>
+    <div className="w-full space-y-16 sm:space-y-24 py-12">
+      {/* ── HERO ── */}
+      <section className="site-container relative pt-12 sm:pt-16">
+        <TopoPattern opacity={0.05} />
+        <div className="max-w-3xl space-y-6">
+          <p className="trail-label text-tangerine font-bold">JOIN SOLVESPRINT</p>
+          <h1 className="display-hero text-ink">
+            Choose how you want to be involved.
+          </h1>
+          <p className="body-large text-ink-muted">
+            High school students and volunteers can complete our interest forms below. Organizations and prospective coordinators can contact us directly by email.
+          </p>
         </div>
       </section>
 
-      {/* 2. Numbered Editorial Pathway Rows */}
-      <section className="py-20 lg:py-28 border-b border-slate-900/10">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="divide-y divide-slate-900/15">
-            {pathways.map((item) => (
-              <div key={item.number} className="py-12 lg:py-16 first:pt-0 last:pb-0">
-                <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
-                  <div className="lg:col-span-4">
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-4xl lg:text-5xl font-black font-mono text-orange-600">
-                        {item.number}
+      {/* ── PARTICIPATION PATHS ── */}
+      <section className="site-container space-y-8">
+        <SectionIntro
+          label="PARTICIPATION PATHS"
+          heading="Select your role"
+        />
+
+        <div className="space-y-6">
+          {roles.map((roleKey, idx) => {
+            const config = FORM_CONFIGS[roleKey];
+            const isGoogleForm = roleKey === "student" || roleKey === "volunteer";
+            const targetUrl = config.url || (isGoogleForm
+              ? roleKey === "student"
+                ? "https://forms.gle/rwwLtgW6pSrJAxuHA"
+                : "https://docs.google.com/forms/d/e/1FAIpQLSdegSPqSJDPExL3szxtFmfEmC0Flkre3QbcQHnxnzQOEyLu8g/viewform"
+              : "mailto:avighna.khare1@gmail.com");
+
+            return (
+              <div
+                key={roleKey}
+                className="rounded-[24px] border-2 border-ink bg-white p-6 sm:p-10 shadow-[5px_5px_0px_0px_#233047] hover:-translate-y-1 transition-all"
+              >
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                  <div className="max-w-2xl space-y-3">
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-sm font-bold text-tangerine">
+                        0{idx + 1}
                       </span>
-                      <span className="text-xs lg:text-sm font-mono font-bold tracking-wider uppercase text-slate-500">
-                        {item.role}
+                      <span className="inline-block px-3 py-1 rounded-[8px] border-2 border-ink bg-sun font-mono text-xs font-bold text-ink uppercase tracking-wider shadow-[2px_2px_0px_0px_#233047]">
+                        {config.label}
                       </span>
                     </div>
-                    <h2 className="mt-3 text-3xl font-bold text-slate-900">{item.title}</h2>
+
+                    <h2 className="heading-support text-ink">
+                      {config.whoItIsFor}
+                    </h2>
+                    <p className="body-standard text-ink-muted">
+                      {config.description}
+                    </p>
+                    <p className="text-sm font-mono text-ink pt-1">
+                      <strong>Expected Commitment:</strong> {config.commitment}
+                    </p>
                   </div>
 
-                  <div className="lg:col-span-5 space-y-4 text-base lg:text-lg text-slate-600 leading-relaxed">
-                    <p>{item.form.description}</p>
-                    <div className="text-sm text-slate-500 space-y-1 pt-2 border-t border-slate-900/10">
-                      <p><strong>Who it is for:</strong> {item.form.whoItIsFor}</p>
-                      <p><strong>Expected commitment:</strong> {item.form.commitment}</p>
-                    </div>
-                  </div>
+                  {/* Action Button & Availability Notice */}
+                  <div className="shrink-0 space-y-3 min-w-[260px]">
+                    <a
+                      href={targetUrl}
+                      target={isGoogleForm ? "_blank" : undefined}
+                      rel={isGoogleForm ? "noopener noreferrer" : undefined}
+                      className={`inline-flex items-center justify-center min-h-[58px] w-full rounded-[14px] border-2 border-ink px-6 py-3.5 font-body font-extrabold text-[17px] leading-tight text-ink shadow-[4px_4px_0px_0px_#233047] hover:-translate-y-0.5 active:translate-y-0.5 transition-all focus:outline-none ${
+                        isGoogleForm
+                          ? "bg-tangerine hover:bg-sun hover:shadow-[6px_6px_0px_0px_#233047]"
+                          : "bg-paper-light hover:bg-sun hover:shadow-[6px_6px_0px_0px_#233047]"
+                      }`}
+                    >
+                      {isGoogleForm ? `${config.buttonText} ↗` : `Email Avighna to Express Interest ✉️`}
+                    </a>
 
-                  <div className="lg:col-span-3 flex flex-col items-start lg:items-end gap-3">
-                    {item.link.isAvailable ? (
-                      <a
-                        href={item.link.url!}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-[48px] w-full lg:w-auto items-center justify-center rounded-xl bg-orange-600 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-orange-700 shadow-sm"
-                      >
-                        {item.form.buttonText} ↗
-                      </a>
-                    ) : (
-                      <div className="w-full lg:text-right">
-                        <button
-                          disabled
-                          className="w-full lg:w-auto cursor-not-allowed rounded-xl bg-slate-300 px-6 py-3 text-[15px] font-semibold text-slate-600"
-                        >
-                          Form Coming Soon
-                        </button>
-                        <p className="mt-1.5 text-xs text-slate-500">Form will open when dates are confirmed.</p>
-                      </div>
+                    {!isGoogleForm && (
+                      <p className="text-xs font-medium text-ink bg-paper-light border border-line rounded-[10px] p-2.5 text-center">
+                        To express interest, email <a href="mailto:avighna.khare1@gmail.com" className="font-bold text-tangerine underline">avighna.khare1@gmail.com</a>
+                      </p>
                     )}
-                    <Link href={item.guideHref} className="text-sm font-semibold text-orange-600 hover:text-orange-700 transition-colors">
-                      {item.guideLabel} →
-                    </Link>
+
+                    <p className="text-[11px] text-ink-muted text-center max-w-[260px] mx-auto">
+                      {config.privacyNote}
+                    </p>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Direct Contact Info */}
-      <section className="py-20 lg:py-28 bg-[#101828] text-white">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-400">QUESTIONS?</span>
-            <h2 className="mt-3 text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-              Contact Event Coordinators
-            </h2>
-            <p className="mt-6 text-lg sm:text-xl text-slate-300 leading-relaxed">
-              If you have specific questions regarding challenge hosting, student eligibility, or event sponsorship, reach out directly to our founding team.
-            </p>
-
-            <div className="mt-10 space-y-4 text-base lg:text-lg text-slate-300">
-              <p>
-                <strong className="text-white font-semibold">{CONTACT_CONFIG.avighna.name}</strong> · {CONTACT_CONFIG.avighna.title}:{" "}
-                <a href={`mailto:${CONTACT_CONFIG.avighna.email}`} className="text-orange-400 underline hover:text-orange-300">
-                  {CONTACT_CONFIG.avighna.email}
-                </a>
-              </p>
-              <p>
-                <strong className="text-white font-semibold">{CONTACT_CONFIG.kavish.name}</strong> · {CONTACT_CONFIG.kavish.title}:{" "}
-                <a href={`mailto:${CONTACT_CONFIG.kavish.email}`} className="text-orange-400 underline hover:text-orange-300">
-                  {CONTACT_CONFIG.kavish.email}
-                </a>
-              </p>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </section>
     </div>

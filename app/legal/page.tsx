@@ -100,45 +100,45 @@ const groups: HubGroup[] = [
 
 export default function LegalHubPage() {
   return (
-    <div className="bg-[#FFF9F0] min-h-screen text-slate-900">
-      <section className="border-b border-slate-900/10 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-          <div className="max-w-3xl">
-            <span className="text-xs lg:text-sm font-semibold tracking-wider uppercase text-orange-600">
-              GOVERNANCE & DISCLOSURES
+    <div className="bg-paper min-h-screen text-ink">
+      <section className="border-b border-line py-16 lg:py-24 bg-paper-light">
+        <div className="site-container">
+          <div className="max-w-3xl space-y-4">
+            <span className="trail-label text-tangerine font-bold">
+              GOVERNANCE &amp; DISCLOSURES
             </span>
-            <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
-              Legal & Safety Hub
+            <h1 className="display-hero text-ink">
+              Legal &amp; Safety Hub
             </h1>
-            <p className="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed">
+            <p className="body-large text-ink-muted">
               Find SolveSprint&apos;s event rules, privacy practices, safety standards, terms of use, and legal disclosures for in-person student innovation competitions.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-20 lg:py-28 border-b border-slate-900/10 bg-[#FFFDF9]">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+      <section className="py-16 lg:py-24 border-b border-line bg-paper">
+        <div className="site-container">
           <div className="space-y-16">
             {groups.map((group) => (
-              <div key={group.title}>
-                <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 border-b border-slate-900/15 pb-4">
+              <div key={group.title} className="space-y-8">
+                <h2 className="display-section text-ink border-b border-line pb-4">
                   {group.title}
                 </h2>
-                <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                   {group.entries.map((entry) => (
-                    <div key={entry.href} className="flex flex-col justify-between border-l-2 border-orange-500 pl-6">
+                    <div key={entry.href} className="flex flex-col justify-between border-l-2 border-tangerine pl-6 bg-paper-light p-6 rounded-r-[16px] border-y border-r border-line">
                       <div>
-                        <h3 className="text-xl font-bold text-slate-900">
-                          <Link href={entry.href} className="hover:text-orange-600 transition-colors">
+                        <h3 className="heading-support text-ink">
+                          <Link href={entry.href} className="hover:text-tangerine transition-colors">
                             {entry.title}
                           </Link>
                         </h3>
-                        <p className="mt-3 text-base text-slate-600 leading-relaxed">{entry.desc}</p>
+                        <p className="mt-3 body-standard text-ink-muted">{entry.desc}</p>
                       </div>
-                      <div className="mt-6 pt-4 border-t border-slate-900/10 flex items-center justify-between text-sm text-slate-500">
+                      <div className="mt-6 pt-4 border-t border-line flex items-center justify-between font-mono text-xs text-ink-muted">
                         <span>v{entry.version}</span>
-                        <Link href={entry.href} className="font-semibold text-orange-600 hover:text-orange-700">
+                        <Link href={entry.href} className="font-bold text-tangerine hover:text-ink">
                           View document →
                         </Link>
                       </div>
@@ -149,9 +149,13 @@ export default function LegalHubPage() {
             ))}
           </div>
 
-          <div className="mt-20 border-t border-slate-900/10 pt-8 text-base text-slate-600">
-            For legal inquiries, email our team or contact us through the{" "}
-            <Link href="/get-involved" className="font-semibold text-orange-600 underline">
+          <div className="mt-16 border-t border-line pt-8 body-standard text-ink-muted">
+            For legal inquiries, contact us directly on our{" "}
+            <Link href="/about" className="font-bold text-tangerine underline hover:text-ink">
+              About &amp; Contact Page
+            </Link>{" "}
+            or through the{" "}
+            <Link href="/get-involved" className="font-bold text-tangerine underline hover:text-ink">
               Get Involved Hub
             </Link>.
           </div>

@@ -17,6 +17,8 @@ const config = [
       "**/.next/**",
       "**/.next-dev/**",
       "**/.open-next/**",
+      "**/dist/**",
+      "**/.wrangler/**",
       "**/SolveSprint-Sanitized-Review/**",
       "**/SolveSprint-PostRemediation-Review/**",
       "**/verification-logs/**"

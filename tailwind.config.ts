@@ -9,34 +9,37 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        midnight: "#101828",
-        ink: "#101828",
-        muted: "#475467",
-        cream: "#FFF9F0",
-        peach: "#FFE4C2",
-        coral: "#F97316",
-        mint: "#BBF7D0",
-        green: "#86EFAC",
-        sky: "#DDF3FA",
-        blue: "#38BDF8",
-        lavender: "#E8E1FF",
-        pink: "#FBCFE8",
-        mist: "#FFFDF9",
-        teal: "#0F766E"
+        paper: "#FFF8EC",
+        "paper-light": "#FFFDF8",
+        ink: "#233047",
+        "ink-muted": "#526076",
+        tangerine: "#F47731",
+        sun: "#F6C74A",
+        leaf: "#78A86B",
+        lake: "#BFE3EC",
+        peach: "#F4C4A7",
+        line: "#D9D3C8",
+        white: "#FFFFFF",
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-        mono: ['"Kode Mono"', "ui-monospace", "SFMono-Regular", "monospace"],
-        display: ["Orbitron", "Inter", "ui-sans-serif", "system-ui", "sans-serif"]
+        display: ["var(--font-display)", "Fraunces", "Georgia", "serif"],
+        body: ["var(--font-body)", "Instrument Sans", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "IBM Plex Mono", "monospace"],
+      },
+      borderRadius: {
+        button: "10px",
+        control: "12px",
+        media: "18px",
+        photo: "28px",
+        field: "28px",
       },
       boxShadow: {
-        premium: "0 24px 80px rgba(16, 24, 40, 0.16)",
-        card: "0 18px 50px rgba(16, 24, 40, 0.08)",
-        lift: "0 18px 32px rgba(16, 24, 40, 0.12)"
-      }
+        photo: "0 20px 60px rgba(35, 48, 71, 0.12)",
+      },
     }
   },
   plugins: []
 };
 
 export default config;
+

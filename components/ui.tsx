@@ -3,20 +3,19 @@ import type { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, ReactNo
 import { cn } from "@/lib/utils";
 
 type Variant = "primary" | "secondary" | "ghost" | "warm" | "danger";
-type Tone = "slate" | "teal" | "amber" | "rose" | "blue" | "green" | "orange" | "lavender" | "pink" | "navy";
 
 export function buttonClasses(variant: Variant = "primary", className?: string) {
   return cn(
-    "inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-6 py-3 text-[15px] lg:text-base font-semibold transition-all duration-200 focus:outline-none focus:ring-4 disabled:cursor-not-allowed disabled:opacity-60",
+    "inline-flex min-h-[60px] sm:min-h-[62px] min-w-[160px] items-center justify-center gap-2 rounded-[16px] px-8 py-3.5 font-body font-extrabold text-[18px] leading-[1.1] transition-all focus:outline-none focus-visible:ring-3 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-60",
     variant === "primary" &&
-      "border-0 bg-orange-600 text-white hover:bg-orange-700 focus:ring-orange-500/25 shadow-sm",
+      "border-2 border-ink bg-tangerine text-ink shadow-[4px_4px_0px_0px_#233047] hover:-translate-y-1 hover:bg-sun hover:shadow-[6px_6px_0px_0px_#233047] active:translate-y-0.5 active:shadow-[2px_2px_0px_0px_#233047]",
     variant === "secondary" &&
-      "border border-slate-900/15 bg-white text-slate-900 hover:border-slate-900/40 hover:bg-slate-50 focus:ring-slate-900/15 shadow-sm",
-    variant === "ghost" && "text-slate-700 hover:bg-slate-200/50 hover:text-slate-950 focus:ring-slate-400/20",
+      "border-2 border-ink bg-paper-light text-ink shadow-[4px_4px_0px_0px_#F47731] hover:-translate-y-1 hover:bg-paper hover:shadow-[6px_6px_0px_0px_#F47731] active:translate-y-0.5 active:shadow-[2px_2px_0px_0px_#F47731]",
+    variant === "ghost" && "border-0 bg-transparent text-ink hover:text-tangerine hover:bg-paper-light/80 min-w-0 px-4 font-bold text-[16px]",
     variant === "warm" &&
-      "border border-amber-300 bg-amber-400 text-slate-950 hover:bg-amber-500 focus:ring-amber-400/25 shadow-sm",
+      "border-2 border-ink bg-sun text-ink shadow-[4px_4px_0px_0px_#233047] hover:-translate-y-1 hover:bg-tangerine hover:shadow-[6px_6px_0px_0px_#233047] active:translate-y-0.5 active:shadow-[2px_2px_0px_0px_#233047]",
     variant === "danger" &&
-      "border border-rose-700 bg-rose-700 text-white hover:bg-rose-800 focus:ring-rose-500/25",
+      "border-2 border-ink bg-rose-600 text-white shadow-[4px_4px_0px_0px_#233047] hover:-translate-y-1 hover:bg-rose-700 hover:shadow-[6px_6px_0px_0px_#233047]",
     className
   );
 }
@@ -51,7 +50,7 @@ export function ButtonLink({
 
 export function Card({ children, className, ...props }: HTMLAttributes<HTMLDivElement> & { children: ReactNode }) {
   return (
-    <div className={cn("ui-card rounded-lg border border-slate-300 bg-white p-6", className)} {...props}>
+    <div className={cn("rounded-[20px] border-2 border-ink bg-white p-6 sm:p-8 shadow-[4px_4px_0px_0px_#233047]", className)} {...props}>
       {children}
     </div>
   );
@@ -63,107 +62,21 @@ export function Badge({
   className
 }: {
   children: ReactNode;
-  tone?: Tone;
+  tone?: "slate" | "teal" | "amber" | "rose" | "blue" | "green" | "orange" | "navy" | "lavender";
   className?: string;
 }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded border px-2.5 py-1 text-xs font-semibold",
-        tone === "slate" && "border-slate-200 bg-slate-50 text-slate-700",
-        tone === "teal" && "border-teal/20 bg-teal/10 text-teal",
-        tone === "amber" && "border-amber-200 bg-amber-50 text-amber-800",
-        tone === "rose" && "border-rose-200 bg-rose-50 text-rose-700",
-        tone === "blue" && "border-sky-200 bg-sky-50 text-sky-800",
-        tone === "green" && "border-green/50 bg-mint/60 text-emerald-900",
-        tone === "orange" && "border-orange/40 bg-peach/60 text-orange-900",
-        tone === "lavender" && "border-violet-200 bg-lavender/70 text-violet-900",
-        tone === "pink" && "border-pink/70 bg-pink/60 text-pink-900",
-        tone === "navy" && "border-midnight bg-midnight text-white",
+        "inline-flex items-center rounded-[8px] border-2 px-3 py-1 text-xs font-bold font-mono tracking-wider uppercase shadow-[2px_2px_0px_0px_#233047]",
+        tone === "orange" && "border-ink bg-tangerine text-ink",
+        tone === "navy" && "border-ink bg-ink text-paper",
+        tone === "slate" && "border-ink bg-paper-light text-ink",
         className
       )}
     >
       {children}
     </span>
-  );
-}
-
-export function EmptyState({
-  title,
-  body,
-  actions,
-  icon
-}: {
-  title: string;
-  body: string;
-  actions?: ReactNode;
-  icon?: ReactNode;
-}) {
-  return (
-    <div className="border-y border-slate-300 bg-transparent py-10 text-left">
-      {icon ? <div className="sr-only">{icon}</div> : null}
-      <h2 className="text-2xl font-semibold tracking-tight text-ink">{title}</h2>
-      <p className="mt-3 max-w-xl text-sm leading-6 text-muted">{body}</p>
-      {actions ? <div className="mt-6 flex flex-wrap gap-3">{actions}</div> : null}
-    </div>
-  );
-}
-
-export function SectionHeader({
-  eyebrow,
-  title,
-  body,
-  actions,
-  align = "left"
-}: {
-  eyebrow?: string;
-  title: string;
-  body?: string;
-  actions?: ReactNode;
-  align?: "left" | "center";
-}) {
-  return (
-    <div className={cn("flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between", align === "center" && "items-center text-center sm:flex-col")}>
-      <div>
-        {eyebrow ? <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">{eyebrow}</p> : null}
-        <h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{title}</h2>
-        {body ? <p className="mt-3 max-w-2xl text-base leading-7 text-muted">{body}</p> : null}
-      </div>
-      {actions ? <div className="flex flex-wrap gap-3">{actions}</div> : null}
-    </div>
-  );
-}
-
-export function PageHeader({
-  eyebrow,
-  title,
-  body,
-  actions
-}: {
-  eyebrow?: string;
-  title: string;
-  body?: string;
-  actions?: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        {eyebrow ? <p className="text-sm font-semibold uppercase tracking-[0.18em] text-teal">{eyebrow}</p> : null}
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-5xl">{title}</h1>
-        {body ? <p className="mt-3 max-w-2xl text-base leading-7 text-muted">{body}</p> : null}
-      </div>
-      {actions ? <div className="flex flex-wrap gap-3">{actions}</div> : null}
-    </div>
-  );
-}
-
-export function StatCard({ label, value, tone = "blue" }: { label: string; value: string | number; tone?: Tone }) {
-  return (
-    <Card className="workspace-stat border-x-0 border-b-0 border-t-slate-400 p-4" data-tone={tone}>
-      <span className="workspace-stat__signal" aria-hidden="true" />
-      <p className="text-xs font-bold uppercase tracking-[0.08em] text-muted">{label}</p>
-      <p className="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-ink">{value}</p>
-    </Card>
   );
 }
 
@@ -181,18 +94,18 @@ export function FormField({
   hint?: string;
 }) {
   return (
-    <label className={cn("block", className)}>
-      <span className="text-sm font-semibold text-slate-800">{label}</span>
+    <label className={cn("block space-y-2.5", className)}>
+      <span className="block text-base font-bold text-ink">{label}</span>
       <input
         name={name}
         className={cn(
-          "field-focus mt-2 min-h-12 w-full rounded-md border bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400",
-          error ? "border-rose-300" : "border-slate-200"
+          "min-h-[54px] w-full rounded-[14px] border-2 border-ink bg-white px-4 py-3.5 text-base font-medium text-ink placeholder:text-ink-muted/50 shadow-[2px_2px_0px_0px_rgba(35,48,71,0.12)] focus:border-ink focus:outline-none focus:ring-4 focus:ring-tangerine/40 focus:shadow-[3px_3px_0px_0px_#233047] transition-all",
+          error ? "border-rose-600 ring-2 ring-rose-200" : "border-ink"
         )}
         {...props}
       />
-      {hint ? <span className="mt-1 block text-xs text-slate-500">{hint}</span> : null}
-      {error ? <span className="mt-1 block text-sm text-rose-600">{error}</span> : null}
+      {hint ? <span className="block text-sm text-ink-muted mt-1">{hint}</span> : null}
+      {error ? <span className="block text-sm font-semibold text-rose-700 mt-1">{error}</span> : null}
     </label>
   );
 }
@@ -211,18 +124,18 @@ export function TextAreaField({
   hint?: string;
 }) {
   return (
-    <label className={cn("block", className)}>
-      <span className="text-sm font-semibold text-slate-800">{label}</span>
+    <label className={cn("block space-y-2.5", className)}>
+      <span className="block text-base font-bold text-ink">{label}</span>
       <textarea
         name={name}
         className={cn(
-          "field-focus mt-2 min-h-32 w-full rounded-md border bg-white px-4 py-3 text-sm leading-6 text-ink placeholder:text-slate-400",
-          error ? "border-rose-300" : "border-slate-200"
+          "min-h-[130px] w-full rounded-[14px] border-2 border-ink bg-white px-4 py-3.5 text-base font-medium text-ink placeholder:text-ink-muted/50 shadow-[2px_2px_0px_0px_rgba(35,48,71,0.12)] focus:border-ink focus:outline-none focus:ring-4 focus:ring-tangerine/40 focus:shadow-[3px_3px_0px_0px_#233047] transition-all",
+          error ? "border-rose-600 ring-2 ring-rose-200" : "border-ink"
         )}
         {...props}
       />
-      {hint ? <span className="mt-1 block text-xs text-slate-500">{hint}</span> : null}
-      {error ? <span className="mt-1 block text-sm text-rose-600">{error}</span> : null}
+      {hint ? <span className="block text-sm text-ink-muted mt-1">{hint}</span> : null}
+      {error ? <span className="block text-sm font-semibold text-rose-700 mt-1">{error}</span> : null}
     </label>
   );
 }
@@ -241,19 +154,19 @@ export function SelectField({
   children: ReactNode;
 }) {
   return (
-    <label className={cn("block", className)}>
-      <span className="text-sm font-semibold text-slate-800">{label}</span>
+    <label className={cn("block space-y-2.5", className)}>
+      <span className="block text-base font-bold text-ink">{label}</span>
       <select
         name={name}
         className={cn(
-          "field-focus mt-2 min-h-12 w-full rounded-md border bg-white px-4 py-3 text-sm text-ink",
-          error ? "border-rose-300" : "border-slate-200"
+          "min-h-[54px] w-full rounded-[14px] border-2 border-ink bg-white px-4 py-3.5 text-base font-medium text-ink shadow-[2px_2px_0px_0px_rgba(35,48,71,0.12)] focus:border-ink focus:outline-none focus:ring-4 focus:ring-tangerine/40 focus:shadow-[3px_3px_0px_0px_#233047] transition-all",
+          error ? "border-rose-600 ring-2 ring-rose-200" : "border-ink"
         )}
         {...props}
       >
         {children}
       </select>
-      {error ? <span className="mt-1 block text-sm text-rose-600">{error}</span> : null}
+      {error ? <span className="block text-sm font-semibold text-rose-700 mt-1">{error}</span> : null}
     </label>
   );
 }
@@ -272,17 +185,17 @@ export function CheckboxField({
   value?: string;
 }) {
   return (
-    <label className="flex min-h-11 gap-3 border-b border-slate-300 bg-transparent py-3 text-sm leading-6 text-slate-700 transition hover:border-orange-700">
+    <label className="flex items-start gap-3 border-b border-line bg-transparent py-3.5 text-base text-ink cursor-pointer">
       <input
         type="checkbox"
         name={name}
         value={value}
         defaultChecked={defaultChecked}
-        className="mt-1 h-5 w-5 rounded border-slate-400 text-midnight focus:ring-blue"
+        className="mt-1 h-5 w-5 rounded border-line text-ink focus:ring-tangerine"
       />
       <span>
         {label}
-        {error ? <span className="mt-1 block text-rose-600">{error}</span> : null}
+        {error ? <span className="block text-sm font-semibold text-rose-700 mt-1">{error}</span> : null}
       </span>
     </label>
   );
@@ -298,10 +211,10 @@ export function Notice({
   return (
     <div
       className={cn(
-        "rounded-md border-l-4 px-4 py-3 text-sm",
-        tone === "success" && "border-green/50 bg-mint/60 text-emerald-900",
-        tone === "error" && "border-rose-200 bg-rose-50 text-rose-700",
-        tone === "info" && "border-sky-200 bg-sky-50 text-sky-800"
+        "rounded-[12px] border-l-4 p-4 text-base font-medium",
+        tone === "success" && "border-leaf bg-leaf/10 text-ink",
+        tone === "error" && "border-rose-700 bg-rose-50 text-rose-900",
+        tone === "info" && "border-lake bg-lake/30 text-ink"
       )}
     >
       {children}
