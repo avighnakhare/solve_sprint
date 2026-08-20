@@ -9,8 +9,12 @@ import { db } from "@/lib/prisma";
 export const SESSION_COOKIE = "solvesprint_session";
 const SESSION_DURATION_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
 
-if (process.env.NODE_ENV === "production" && !process.env.AUTH_SECRET) {
-  throw new Error("AUTH_SECRET environment variable is missing");
+export function getAuthSecret(): string {
+  const secret = process.env.AUTH_SECRET;
+  if (!secret) {
+    throw new Error("AUTH_SECRET environment variable is missing");
+  }
+  return secret;
 }
 
 export function effectiveRoleFor(user: Pick<User, "email" | "role">): RoleValue {
@@ -64,6 +68,7 @@ export function sanitizeRedirectUrl(url: string | undefined | null, fallback = "
 }
 
 export async function createSession(user: Pick<User, "id" | "email" | "role" | "sessionVersion">, reqIp?: string, userAgent?: string) {
+  getAuthSecret();
   const rawToken = crypto.randomBytes(32).toString("hex");
   const sessionTokenHash = hashToken(rawToken);
   const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);

@@ -16,3 +16,6 @@ prisma/build.db-journal
 *.zip
 SolveSprint-*
 verification-logs/
+build_verification_pass/
+temp_*
+

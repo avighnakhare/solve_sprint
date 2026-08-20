@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "npm run build:sites",
     "build:next": "node scripts/build-next.mjs",
+    "build:vercel": "node scripts/build-vercel.mjs",
     "build:sites": "opennextjs-cloudflare build && wrangler deploy --dry-run --outdir .open-next/wrangler-bundle && node scripts/prepare-sites-build.mjs",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

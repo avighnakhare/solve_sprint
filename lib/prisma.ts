@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaD1 } from "@prisma/adapter-d1";
 import { PrismaLibSQL } from "@prisma/adapter-libsql";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { resolve } from "node:path";
 
 const globalForPrisma = globalThis as unknown as {
@@ -22,6 +21,8 @@ function createLocalClient() {
 
 function getCloudflareD1Client() {
   try {
+    // Dynamic require so non-Cloudflare environments (Vercel) do not fail static evaluation
+    const { getCloudflareContext } = require("@opennextjs/cloudflare");
     const { env } = getCloudflareContext();
     const d1 = (env as { DB?: unknown }).DB;
 

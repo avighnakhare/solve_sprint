@@ -1,6 +1,6 @@
 import { TopoPattern } from "@/components/brand/TopoPattern";
 import { SectionIntro } from "@/components/editorial/SectionIntro";
-import { FORM_CONFIGS, FormRole } from "@/lib/site-config";
+import { FORM_CONFIGS, FormRole, getFormLink } from "@/lib/site-config";
 
 export const metadata = {
   title: "Get Involved | SolveSprint™",
@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default function GetInvolvedPage() {
-  // Ordered as requested: 1st Student, 2nd Volunteer, then Organization & Coordinator at the bottom
+  // Ordered: 1. Student, 2. Volunteer, 3. Organization, 4. Coordinator
   const roles: FormRole[] = ["student", "volunteer", "organization", "coordinator"];
 
   return (
@@ -37,12 +37,9 @@ export default function GetInvolvedPage() {
         <div className="space-y-6">
           {roles.map((roleKey, idx) => {
             const config = FORM_CONFIGS[roleKey];
-            const isGoogleForm = roleKey === "student" || roleKey === "volunteer";
-            const targetUrl = config.url || (isGoogleForm
-              ? roleKey === "student"
-                ? "https://forms.gle/rwwLtgW6pSrJAxuHA"
-                : "https://docs.google.com/forms/d/e/1FAIpQLSdegSPqSJDPExL3szxtFmfEmC0Flkre3QbcQHnxnzQOEyLu8g/viewform"
-              : "mailto:avighna.khare1@gmail.com");
+            const { url, isAvailable } = getFormLink(roleKey);
+            const isExternalUrl = Boolean(url && url.startsWith("http"));
+            const targetUrl = isAvailable ? url! : "#";
 
             return (
               <div
@@ -75,18 +72,18 @@ export default function GetInvolvedPage() {
                   <div className="shrink-0 space-y-3 min-w-[260px]">
                     <a
                       href={targetUrl}
-                      target={isGoogleForm ? "_blank" : undefined}
-                      rel={isGoogleForm ? "noopener noreferrer" : undefined}
+                      target={isExternalUrl ? "_blank" : undefined}
+                      rel={isExternalUrl ? "noopener noreferrer" : undefined}
                       className={`inline-flex items-center justify-center min-h-[58px] w-full rounded-[14px] border-2 border-ink px-6 py-3.5 font-body font-extrabold text-[17px] leading-tight text-ink shadow-[4px_4px_0px_0px_#233047] hover:-translate-y-0.5 active:translate-y-0.5 transition-all focus:outline-none ${
-                        isGoogleForm
+                        isExternalUrl
                           ? "bg-tangerine hover:bg-sun hover:shadow-[6px_6px_0px_0px_#233047]"
                           : "bg-paper-light hover:bg-sun hover:shadow-[6px_6px_0px_0px_#233047]"
                       }`}
                     >
-                      {isGoogleForm ? `${config.buttonText} ↗` : `Email Avighna to Express Interest ✉️`}
+                      {isExternalUrl ? `${config.buttonText} ↗` : `${config.buttonText} ✉️`}
                     </a>
 
-                    {!isGoogleForm && (
+                    {!isExternalUrl && (
                       <p className="text-xs font-medium text-ink bg-paper-light border border-line rounded-[10px] p-2.5 text-center">
                         To express interest, email <a href="mailto:avighna.khare1@gmail.com" className="font-bold text-tangerine underline">avighna.khare1@gmail.com</a>
                       </p>
